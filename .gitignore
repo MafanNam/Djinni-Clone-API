@@ -110,6 +110,9 @@ ENV/
 env.bak/
 venv.bak/
 myenv
+.envs/*
+!.envs/.local/
+.envs/.local/django.env
 
 # Spyder project settings
 .spyderproject
