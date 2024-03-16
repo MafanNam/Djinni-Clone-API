@@ -10,7 +10,7 @@ env = environ.Env(
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-envs_folder = os.path.join(BASE_DIR, "..", ".envs", ".local")
+envs_folder = os.path.join(BASE_DIR, ".envs", ".local")
 
 # Take environment variables from .env file
 # environ.Env.read_env(os.path.join(BASE_DIR, '.envs.local'))
@@ -27,6 +27,10 @@ DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
 
+if DEBUG:
+    # `debug` is only True in templates if the vistor IP is in INTERNAL_IPS.
+    INTERNAL_IPS = type("c", (), {"__contains__": lambda *a: True})()
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -40,10 +44,15 @@ INSTALLED_APPS = [
     # THIRD_PARTY_APPS
     "rest_framework",
     "rest_framework_simplejwt",
+    "django_celery_results",
+    "django_celery_beat",
+    "djcelery_email",
     "djoser",
     "social_django",
     "corsheaders",
     "drf_spectacular",
+    "debug_toolbar",
+    "cachalot",
     # LOCAL_APPS
     "apps.users",
 ]
@@ -58,6 +67,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    "apps.users.middleware.JWTFromCookieMiddleware",
 ]
 
 ROOT_URLCONF = "backend.urls"
@@ -120,11 +131,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Kiev"
 
 USE_I18N = True
 
 USE_TZ = True
+
+SITE_ID = 1
 
 CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
 
@@ -144,8 +157,55 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "users.User"
 
+DEBUG_TOOLBAR_PANELS = [
+    "debug_toolbar.panels.history.HistoryPanel",
+    "debug_toolbar.panels.versions.VersionsPanel",
+    "debug_toolbar.panels.timer.TimerPanel",
+    "debug_toolbar.panels.settings.SettingsPanel",
+    "debug_toolbar.panels.headers.HeadersPanel",
+    "debug_toolbar.panels.request.RequestPanel",
+    "debug_toolbar.panels.sql.SQLPanel",
+    "debug_toolbar.panels.staticfiles.StaticFilesPanel",
+    "debug_toolbar.panels.templates.TemplatesPanel",
+    "debug_toolbar.panels.cache.CachePanel",
+    "debug_toolbar.panels.signals.SignalsPanel",
+    "cachalot.panels.CachalotPanel",
+]
+
+# CELERY
+CELERY_BROKER_URL = env("CELERY_BROKER_URL", default="redis://localhost:6379/0")
+CELERY_ACCEPT_CONTENT = ["application/json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_RESULT_BACKEND_MAX_RETRIES = 10
+CELERY_TASK_SEND_SENT_EVENT = True
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
+if USE_TZ:
+    CELERY_TIMEZONE = TIME_ZONE
+
+# CELERY RESULT SETTINGS
+CELERY_RESULT_EXTENDED = True
+CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND", default="django-db")
+CELERY_CACHE_BACKEND = env("CELERY_CACHE_BACKEND", default="django-cache")
+
+# CELERY BEAT SETTINGS
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+
+# CACHE
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": env("REDIS_CACHE_LOCATION", default="redis://localhost:6379/1"),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
+
 # EMAIL
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = "djcelery_email.backends.CeleryEmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
@@ -174,11 +234,19 @@ AUTHENTICATION_BACKENDS = (
 )
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-    "AUTH_HEADER_TYPES": ("JWT",),
+    "ROTATE_REFRESH_TOKENS": True,
+    "SIGNING_KEY": env("SIGNING_KEY"),
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "AUTH_COOKIE": "access_token",
 }
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 DJOSER = {
     "LOGIN_FIELD": "email",
@@ -195,11 +263,13 @@ DJOSER = {
     "SOCIAL_AUTH_TOKEN_STRATEGY": "djoser.social.token.jwt.TokenStrategy",
     "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": ["http://localhost:8000", "http://localhost:3000"],
     "SERIALIZERS": {
-        "user_create": "apps.users.api.serializers.CustomUserCreateSerializer",
-        "users": "apps.users.api.serializers.CustomUserCreateSerializer",
-        "current_user": "apps.users.api.serializers.CustomUserCreateSerializer",
+        "user_create_password_retype": "apps.users.api.serializers.CustomUserCreatePasswordRetypeSerializer",
+        "user": "apps.users.api.serializers.CustomUserSerializer",
+        "current_user": "apps.users.api.serializers.CustomUserSerializer",
         "user_delete": "djoser.serializers.UserDeleteSerializer",
     },
+    "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True,
+    "USERNAME_RESET_SHOW_EMAIL_NOT_FOUND": True,
 }
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY", default="")

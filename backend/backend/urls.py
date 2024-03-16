@@ -18,3 +18,8 @@ urlpatterns += [
     path("", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
     path("redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
 ]
+
+# Debug Tool Bar
+urlpatterns += [
+    path("__debug__/", include("debug_toolbar.urls")),
+]
