@@ -10,7 +10,9 @@ https://docs.djangoproject.com/en/5.0/howto/deployment/wsgi/
 import os
 
 from django.core.wsgi import get_wsgi_application
+from environ import Env
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
+env = Env()
 
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", env("DJANGO_SETTINGS_MODULE", default="backend.settings.local"))
 application = get_wsgi_application()

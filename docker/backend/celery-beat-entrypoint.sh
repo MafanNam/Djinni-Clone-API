@@ -12,4 +12,4 @@ do
 done
 
 # run a worker celery beat :)
-celery -A backend beat -l info
+celery -A backend.celery beat -l info

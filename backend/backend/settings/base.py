@@ -1,35 +1,18 @@
-import os
 from datetime import timedelta
 from pathlib import Path
 
 import environ
 
-env = environ.Env(
-    DEBUG=(bool, False),
-)
+env = environ.Env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-envs_folder = os.path.join(BASE_DIR, ".envs", ".local")
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-# Take environment variables from .env file
-# environ.Env.read_env(os.path.join(BASE_DIR, '.envs.local'))
-for filename in os.listdir(envs_folder):
-    if filename.endswith(".env"):
-        dotenv_path = os.path.join(envs_folder, filename)
-        env.read_env(dotenv_path)
+APP_DIR = BASE_DIR / "apps"
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY", default="django-insecure-kdxyc)gjt4qs-sk^##l54mrxczdv_)jm%_fg$)5_5bktcmt&ia")
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env("DEBUG")
+DEBUG = env("DEBUG", default=False)
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
-
-if DEBUG:
-    # `debug` is only True in templates if the vistor IP is in INTERNAL_IPS.
-    INTERNAL_IPS = type("c", (), {"__contains__": lambda *a: True})()
 
 # Application definition
 
@@ -51,7 +34,6 @@ INSTALLED_APPS = [
     "social_django",
     "corsheaders",
     "drf_spectacular",
-    "debug_toolbar",
     "cachalot",
     # LOCAL_APPS
     "apps.users",
@@ -67,7 +49,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "apps.users.middleware.JWTFromCookieMiddleware",
 ]
 
@@ -139,7 +120,7 @@ USE_TZ = True
 
 SITE_ID = 1
 
-CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
+CORS_URLS_REGEX = r"^api/.*$"
 
 # Static files (CSS, JavaScript, Images)
 
@@ -156,21 +137,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # DEFAULT USER MODEL
 
 AUTH_USER_MODEL = "users.User"
-
-DEBUG_TOOLBAR_PANELS = [
-    "debug_toolbar.panels.history.HistoryPanel",
-    "debug_toolbar.panels.versions.VersionsPanel",
-    "debug_toolbar.panels.timer.TimerPanel",
-    "debug_toolbar.panels.settings.SettingsPanel",
-    "debug_toolbar.panels.headers.HeadersPanel",
-    "debug_toolbar.panels.request.RequestPanel",
-    "debug_toolbar.panels.sql.SQLPanel",
-    "debug_toolbar.panels.staticfiles.StaticFilesPanel",
-    "debug_toolbar.panels.templates.TemplatesPanel",
-    "debug_toolbar.panels.cache.CachePanel",
-    "debug_toolbar.panels.signals.SignalsPanel",
-    "cachalot.panels.CachalotPanel",
-]
 
 # CELERY
 CELERY_BROKER_URL = env("CELERY_BROKER_URL", default="redis://localhost:6379/0")
@@ -203,14 +169,6 @@ CACHES = {
         },
     }
 }
-
-# EMAIL
-EMAIL_BACKEND = "djcelery_email.backends.CeleryEmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587
-EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
-EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
-EMAIL_USE_TLS = True
 
 # DOC
 SPECTACULAR_SETTINGS = {
@@ -261,7 +219,9 @@ DJOSER = {
     "ACTIVATION_URL": "activate/{uid}/{token}",
     "SEND_ACTIVATION_EMAIL": True,
     "SOCIAL_AUTH_TOKEN_STRATEGY": "djoser.social.token.jwt.TokenStrategy",
-    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": ["http://localhost:8000", "http://localhost:3000"],
+    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": env.list(
+        "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS", default=["http://localhost:8000", "http://localhost:3000"]
+    ),
     "SERIALIZERS": {
         "user_create_password_retype": "apps.users.api.serializers.CustomUserCreatePasswordRetypeSerializer",
         "user": "apps.users.api.serializers.CustomUserSerializer",
