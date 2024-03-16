@@ -8,19 +8,18 @@ from .managers import CustomUserManager
 
 class User(AbstractBaseUser, PermissionsMixin):
     """Custom users model"""
-    CANDIDATE = 'CANDIDATE'
-    EMPLOYER = 'EMPLOYER'
+
+    CANDIDATE = "CANDIDATE"
+    EMPLOYER = "EMPLOYER"
     TYPE_PROFILE_CHOICES = (
-        (CANDIDATE, _('Candidate')),
-        (EMPLOYER, _('Employer')),
+        (CANDIDATE, _("Candidate")),
+        (EMPLOYER, _("Employer")),
     )
 
     # User fields
     first_name = models.CharField(verbose_name=_("first name"), max_length=50)
     last_name = models.CharField(verbose_name=_("last name"), max_length=50)
-    email = models.EmailField(
-        verbose_name=_("email address"), db_index=True, unique=True
-    )
+    email = models.EmailField(verbose_name=_("email address"), db_index=True, unique=True)
     type_profile = models.CharField(
         verbose_name=_("type profile"),
         max_length=20,
