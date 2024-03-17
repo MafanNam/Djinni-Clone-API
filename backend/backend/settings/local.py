@@ -5,7 +5,7 @@ from .base import env
 SECRET_KEY = env("SECRET_KEY", default="django-insecure-kdxyc)gjt4qs-sk^##l54mrxczdv_)jm%_fg$)5_5bktcmt&ia")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env("DEBUG")
+DEBUG = env("DEBUG", default=True)
 
 if DEBUG:
     # `debug` is only True in templates if the vistor IP is in INTERNAL_IPS.
@@ -29,7 +29,7 @@ EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = "support@medium.site"
-DOMAIN = env("DOMAIN")
+DOMAIN = env("DOMAIN", default="localhost:8000")
 SITE_NAME = "Djinni Clone"
 
 # DEBUG TOOLBAR

@@ -1,5 +1,7 @@
 .idea
 .venv
+venv
 **/.git
 .gitignore
+.gitattributes
 .vscode

@@ -6,7 +6,7 @@ services:
         restart: unless-stopped
         build:
             context: .
-            dockerfile: ./docker/backend/Dockerfile
+            dockerfile: docker/local/backend/Dockerfile
         entrypoint: /app/docker/backend/server-entrypoint.sh
         volumes:
             - static_volume:/app/backend/staticfiles
@@ -23,7 +23,7 @@ services:
         restart: unless-stopped
         build:
             context: .
-            dockerfile: ./docker/backend/Dockerfile
+            dockerfile: docker/local/backend/Dockerfile
         entrypoint: /app/docker/backend/worker-entrypoint.sh
         volumes:
             - static_volume:/app/backend/staticfiles
@@ -38,7 +38,7 @@ services:
         restart: unless-stopped
         build:
             context: .
-            dockerfile: ./docker/backend/Dockerfile
+            dockerfile: docker/local/backend/Dockerfile
         entrypoint: /app/docker/backend/celery-beat-entrypoint.sh
         volumes:
             - static_volume:/app/backend/staticfiles

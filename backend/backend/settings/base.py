@@ -34,9 +34,13 @@ INSTALLED_APPS = [
     "social_django",
     "corsheaders",
     "drf_spectacular",
+    "taggit",
+    "multiselectfield",
     "cachalot",
     # LOCAL_APPS
     "apps.users",
+    "apps.accounts",
+    "apps.other",
 ]
 
 MIDDLEWARE = [
@@ -196,7 +200,7 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,
-    "SIGNING_KEY": env("SIGNING_KEY"),
+    "SIGNING_KEY": env("SIGNING_KEY", default=""),
     "USER_ID_FIELD": "id",
     "USER_ID_CLAIM": "user_id",
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),

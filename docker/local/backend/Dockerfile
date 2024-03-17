@@ -16,9 +16,12 @@ ADD ./requirements/local.txt /app/requirements.txt
 ADD ./requirements/base.txt /app/base.txt
 RUN pip install -r requirements.txt
 
+RUN sed -i '/def _get_flatchoices(self):/,/flatchoices = property(_get_flatchoices)/d' /usr/local/lib/python3.11/site-packages/multiselectfield/db/fields.py
+
+
 ADD ./backend /app/backend
 ADD ./.envs /app/backend/.envs
-ADD ./docker /app/docker
+ADD ./docker/local /app/docker
 
 RUN chmod +x /app/docker/backend/server-entrypoint.sh
 RUN chmod +x /app/docker/backend/worker-entrypoint.sh
