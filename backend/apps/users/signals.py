@@ -9,17 +9,23 @@ User = get_user_model()
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     """Create a user profile when a new user is created."""
-    if created:
-        if instance.type_profile == User.CANDIDATE:
-            CandidateProfile.objects.create(user=instance, first_name=instance.first_name, last_name=instance.last_name)
-        elif instance.type_profile == User.EMPLOYER:
-            RecruiterProfile.objects.create(user=instance, first_name=instance.first_name, last_name=instance.last_name)
+    if not instance.is_superuser:
+        if created:
+            if instance.type_profile == User.CANDIDATE:
+                CandidateProfile.objects.create(
+                    user=instance, first_name=instance.first_name, last_name=instance.last_name
+                )
+            elif instance.type_profile == User.EMPLOYER:
+                RecruiterProfile.objects.create(
+                    user=instance, first_name=instance.first_name, last_name=instance.last_name
+                )
 
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     """Save the user profile when the user is saved."""
-    if instance.type_profile == "CANDIDATE":
-        instance.user_profile.save()
-    elif instance.type_profile == "EMPLOYER":
-        instance.recruiter_profile.save()
+    if not instance.is_superuser:
+        if instance.type_profile == User.CANDIDATE:
+            instance.candidate_profile.save()
+        elif instance.type_profile == User.CANDIDATE:
+            instance.recruiter_profile.save()

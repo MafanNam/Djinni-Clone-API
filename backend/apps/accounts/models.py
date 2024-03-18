@@ -4,22 +4,19 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MaxLengthValidator, MaxValueValidator, MinLengthValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django_countries.fields import CountryField
+from model_utils import Choices
 from multiselectfield import MultiSelectField
 from taggit.managers import TaggableManager
 
 User = get_user_model()
 
-NONE = "NONE"
-BEGINNER = "BEGINNER"
-INTERMEDIATE = "INTERMEDIATE"
-UPPER_INTERMEDIATE = "UPPER_INTERMEDIATE"
-ADVANCED = "ADVANCED"
-ENG_LEVEL = (
-    (NONE, "No English"),
-    (BEGINNER, "Beginner/Elementary"),
-    (INTERMEDIATE, "Intermediate"),
-    (UPPER_INTERMEDIATE, "Upper-Intermediate"),
-    (ADVANCED, "Advanced/Fluent"),
+ENG_LEVEL = Choices(
+    ("none", "No English"),
+    ("beginner", "Beginner/Elementary"),
+    ("intermediate", "Intermediate"),
+    ("upper_intermediate", "Upper-Intermediate"),
+    ("advanced", "Advanced/Fluent"),
 )
 
 REMOTE = "REMOTE"
@@ -44,17 +41,17 @@ FIND_JOB = (
 
 
 class CandidateProfile(TimeStampedModel):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="user_profile")
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="candidate_profile")
     first_name = models.CharField(max_length=50, blank=True)
     last_name = models.CharField(max_length=50, blank=True)
     position = models.CharField(max_length=50, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name="candidate_profile")
     skills = TaggableManager(verbose_name=_("Skills"), blank=True)
     work_exp = models.PositiveIntegerField(validators=[MaxValueValidator(10)], blank=True, null=True)
     salary_expectation = models.PositiveIntegerField(validators=[MaxValueValidator(100000)], blank=True, null=True)
-    country = models.CharField(max_length=50, blank=True)
+    country = models.CharField(max_length=200, null=True, choices=CountryField().choices + [("", "Select Country")])
     city = models.CharField(max_length=50, blank=True)
-    eng_level = models.CharField(choices=ENG_LEVEL, max_length=50, default=NONE)
+    eng_level = models.CharField(choices=ENG_LEVEL, max_length=50, default=ENG_LEVEL.none)
     work_exp_bio = models.TextField(
         validators=[MinLengthValidator(200), MaxLengthValidator(1000)], blank=True, null=True
     )
@@ -75,8 +72,8 @@ class RecruiterProfile(TimeStampedModel):
     first_name = models.CharField(max_length=50, blank=True)
     last_name = models.CharField(max_length=50, blank=True)
     position = models.CharField(max_length=50, blank=True)
-    country = models.CharField(max_length=50, blank=True)
-    company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True)
+    country = models.CharField(max_length=200, null=True, choices=CountryField().choices + [("", "Select Country")])
+    company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True, related_name="recruiter_profile")
     image = models.ImageField(upload_to="images/")
     trust_hr = models.BooleanField(default=False)
 
