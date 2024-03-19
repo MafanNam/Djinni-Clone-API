@@ -17,7 +17,7 @@ def create_user_profile(sender, instance, created, **kwargs):
                 CandidateProfile.objects.create(
                     user=instance, first_name=instance.first_name, last_name=instance.last_name
                 )
-            elif instance.type_profile == TYPE_PROFILE_CHOICES.employer:
+            elif instance.type_profile == TYPE_PROFILE_CHOICES.recruiter:
                 RecruiterProfile.objects.create(
                     user=instance, first_name=instance.first_name, last_name=instance.last_name
                 )
@@ -29,5 +29,5 @@ def save_user_profile(sender, instance, **kwargs):
     if not instance.is_superuser:
         if instance.type_profile == TYPE_PROFILE_CHOICES.candidate:
             instance.candidate_profile.save()
-        elif instance.type_profile == TYPE_PROFILE_CHOICES.employer:
+        elif instance.type_profile == TYPE_PROFILE_CHOICES.recruiter:
             instance.recruiter_profile.save()

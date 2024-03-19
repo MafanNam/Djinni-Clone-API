@@ -8,7 +8,7 @@ from .managers import CustomUserManager
 
 TYPE_PROFILE_CHOICES = Choices(
     ("candidate", _("Candidate")),
-    ("employer", _("Employer")),
+    ("recruiter", _("Recruiter")),
 )
 
 
@@ -23,7 +23,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name=_("type profile"),
         max_length=20,
         choices=TYPE_PROFILE_CHOICES,
-        default=TYPE_PROFILE_CHOICES.employer,
+        default=TYPE_PROFILE_CHOICES.candidate,
     )
 
     # User permissions

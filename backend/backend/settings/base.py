@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # LOCAL_APPS
     "apps.users",
     "apps.accounts",
+    "apps.vacancy",
     "apps.other",
 ]
 
