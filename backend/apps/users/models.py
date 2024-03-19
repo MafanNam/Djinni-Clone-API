@@ -2,19 +2,18 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from model_utils import Choices
 
 from .managers import CustomUserManager
+
+TYPE_PROFILE_CHOICES = Choices(
+    ("candidate", _("Candidate")),
+    ("employer", _("Employer")),
+)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
     """Custom users model"""
-
-    CANDIDATE = "CANDIDATE"
-    EMPLOYER = "EMPLOYER"
-    TYPE_PROFILE_CHOICES = (
-        (CANDIDATE, _("Candidate")),
-        (EMPLOYER, _("Employer")),
-    )
 
     # User fields
     first_name = models.CharField(verbose_name=_("first name"), max_length=50)
@@ -24,7 +23,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name=_("type profile"),
         max_length=20,
         choices=TYPE_PROFILE_CHOICES,
-        default=CANDIDATE,
+        default=TYPE_PROFILE_CHOICES.employer,
     )
 
     # User permissions

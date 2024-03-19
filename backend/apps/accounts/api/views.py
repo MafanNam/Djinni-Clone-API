@@ -1,6 +1,8 @@
-from apps.accounts.api.serializers import CandidateProfileSerializer
+from apps.accounts.api.serializers import CandidateProfileSerializer, UpdateCandidateProfileSerializer
 from apps.accounts.models import CandidateProfile
 from rest_framework import generics, permissions
+
+from .permissions import CandidateRequiredPermission
 
 
 class CandidateProfileListAPIView(generics.ListAPIView):
@@ -17,7 +19,15 @@ class CandidateProfileDetailAPIView(generics.RetrieveAPIView):
         queryset = CandidateProfile.objects.select_related("user")
         return queryset
 
+
+class CandidateProfileUserAPIView(generics.RetrieveUpdateAPIView):
+    permission_classes = [CandidateRequiredPermission]
+
     def get_object(self):
-        id = self.kwargs["pk"]
-        candidate_profile = self.get_queryset().get(id=id)
+        candidate_profile = self.request.user.candidate_profile
         return candidate_profile
+
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return CandidateProfileSerializer
+        return UpdateCandidateProfileSerializer

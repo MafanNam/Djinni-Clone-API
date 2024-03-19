@@ -19,24 +19,17 @@ ENG_LEVEL = Choices(
     ("advanced", "Advanced/Fluent"),
 )
 
-REMOTE = "REMOTE"
-OFFICE = "OFFICE"
-PART_TIME = "PART_TIME"
-FREELANCE = "FREELANCE"
-EMPLOY_OPTIONS = (
-    (REMOTE, "Remote work"),
-    (OFFICE, "Office"),
-    (PART_TIME, "Part-time"),
-    (FREELANCE, "Freelance (one-off projects)"),
+EMPLOY_OPTIONS = Choices(
+    ("remote", "Remote work"),
+    ("office", "Office"),
+    ("part_time", "Part-time"),
+    ("freelance", "Freelance (one-off projects)"),
 )
 
-ACTIVE = "ACTIVE"
-PASSIVE = "PASSIVE"
-DISABLED = "DISABLED"
-FIND_JOB = (
-    (ACTIVE, _("Active search")),
-    (PASSIVE, _("Passive search")),
-    (DISABLED, _("Not looking for a job")),
+FIND_JOB = Choices(
+    ("active", _("Active search")),
+    ("passive", _("Passive search")),
+    ("disabled", _("Not looking for a job")),
 )
 
 
@@ -57,7 +50,7 @@ class CandidateProfile(TimeStampedModel):
     )
     employ_options = MultiSelectField(choices=EMPLOY_OPTIONS, max_length=50, blank=True)
     image = models.ImageField(upload_to="images/")
-    find_job = models.CharField(choices=FIND_JOB, default=PASSIVE, max_length=50)
+    find_job = models.CharField(choices=FIND_JOB, default=FIND_JOB.passive, max_length=50)
 
     class Meta:
         verbose_name = _("Candidate Profile")
