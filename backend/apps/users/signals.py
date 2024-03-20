@@ -1,4 +1,4 @@
-from apps.accounts.models import CandidateProfile, RecruiterProfile
+from apps.accounts.models import CandidateProfile, ContactCv, RecruiterProfile
 from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -16,6 +16,9 @@ def create_user_profile(sender, instance, created, **kwargs):
             if instance.type_profile == TYPE_PROFILE_CHOICES.candidate:
                 CandidateProfile.objects.create(
                     user=instance, first_name=instance.first_name, last_name=instance.last_name
+                )
+                ContactCv.objects.create(
+                    user=instance, first_name=instance.first_name, last_name=instance.last_name, email=instance.email
                 )
             elif instance.type_profile == TYPE_PROFILE_CHOICES.recruiter:
                 RecruiterProfile.objects.create(

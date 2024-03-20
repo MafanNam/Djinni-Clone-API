@@ -1,7 +1,8 @@
-from apps.accounts.models import EMPLOY_OPTIONS, CandidateProfile, RecruiterProfile
+from apps.accounts.models import EMPLOY_OPTIONS, CandidateProfile, ContactCv, RecruiterProfile
 from apps.other.api.serializers import ShortCompanySerializer
 from apps.other.models import Category, Company
 from django_countries.serializer_fields import CountryField
+from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
 from taggit.serializers import TaggitSerializer, TagListSerializerField
 
@@ -92,3 +93,24 @@ class RecruiterProfileSerializer(serializers.ModelSerializer):
 
 class UpdateRecruiterProfileSerializer(RecruiterProfileSerializer):
     company = serializers.SlugRelatedField(slug_field="name", queryset=Company.objects.all())
+
+
+class ContactCvSerializer(serializers.ModelSerializer):
+    phone_number = PhoneNumberField()
+
+    class Meta:
+        model = ContactCv
+        fields = (
+            "id",
+            "first_name",
+            "last_name",
+            "email",
+            "phone_number",
+            "telegram_url",
+            "linkedin_url",
+            "git_hub_url",
+            "portfolio_url",
+            "cv_file",
+            "created_at",
+            "updated_at",
+        )

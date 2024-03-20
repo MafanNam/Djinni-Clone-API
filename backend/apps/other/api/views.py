@@ -6,12 +6,16 @@ from .serializers import CategorySerializer, CompanySerializer
 
 
 class CategoryListAPIView(generics.ListAPIView):
+    """List all categories."""
+
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [permissions.AllowAny]
 
 
 class CompanyListCreateAPIView(generics.ListCreateAPIView):
+    """List all companies, or create a new company."""
+
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
 
@@ -30,6 +34,8 @@ class CompanyListCreateAPIView(generics.ListCreateAPIView):
 
 
 class CompanyDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    """CRUD view for company details. Only recruiters can edit or delete companies."""
+
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
 

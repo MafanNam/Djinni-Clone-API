@@ -38,11 +38,12 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "taggit",
     "multiselectfield",
+    "phonenumber_field",
     "cachalot",
     # LOCAL_APPS
     "apps.users",
     "apps.accounts",
-    # "apps.vacancy",
+    "apps.vacancy",
     "apps.other",
 ]
 
