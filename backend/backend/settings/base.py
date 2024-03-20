@@ -29,8 +29,9 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "django_celery_results",
     "django_celery_beat",
-    "djcelery_email",
+    "django_cleanup",
     "django_countries",
+    "djcelery_email",
     "djoser",
     "social_django",
     "corsheaders",
@@ -41,7 +42,7 @@ INSTALLED_APPS = [
     # LOCAL_APPS
     "apps.users",
     "apps.accounts",
-    "apps.vacancy",
+    # "apps.vacancy",
     "apps.other",
 ]
 

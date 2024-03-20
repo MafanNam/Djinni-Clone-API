@@ -2,6 +2,7 @@ from apps.accounts.api.serializers import (
     CandidateProfileSerializer,
     RecruiterProfileSerializer,
     UpdateCandidateProfileSerializer,
+    UpdateRecruiterProfileSerializer,
 )
 from apps.accounts.models import CandidateProfile, RecruiterProfile
 from rest_framework import generics, permissions
@@ -54,8 +55,12 @@ class RecruiterProfileDetailAPIView(generics.RetrieveAPIView):
 
 class RecruiterProfileUserAPIView(generics.RetrieveUpdateAPIView):
     permission_classes = [RecruiterRequiredPermission]
-    serializer_class = RecruiterProfileSerializer
 
     def get_object(self):
         recruiter_profile = self.request.user.recruiter_profile
         return recruiter_profile
+
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return RecruiterProfileSerializer
+        return UpdateRecruiterProfileSerializer

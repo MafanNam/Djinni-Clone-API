@@ -1,4 +1,5 @@
 from apps.core.models import TimeStampedModel
+from apps.core.services import get_path_upload_image_candidate, get_path_upload_image_recruiter, validate_file_size
 from apps.other.models import Category, Company
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxLengthValidator, MaxValueValidator, MinLengthValidator
@@ -49,7 +50,7 @@ class CandidateProfile(TimeStampedModel):
         validators=[MinLengthValidator(200), MaxLengthValidator(1000)], blank=True, null=True
     )
     employ_options = MultiSelectField(choices=EMPLOY_OPTIONS, max_length=50, blank=True)
-    image = models.ImageField(upload_to="images/")
+    image = models.ImageField(upload_to=get_path_upload_image_candidate, validators=[validate_file_size])
     find_job = models.CharField(choices=FIND_JOB, default=FIND_JOB.passive, max_length=50)
 
     class Meta:
@@ -67,7 +68,7 @@ class RecruiterProfile(TimeStampedModel):
     position = models.CharField(max_length=50, blank=True)
     country = models.CharField(max_length=200, null=True, choices=CountryField().choices + [("", "Select Country")])
     company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True, related_name="recruiter_profile")
-    image = models.ImageField(upload_to="images/")
+    image = models.ImageField(upload_to=get_path_upload_image_recruiter, validators=[validate_file_size])
     trust_hr = models.BooleanField(default=False)
 
     class Meta:

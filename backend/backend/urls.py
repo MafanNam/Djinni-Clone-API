@@ -8,7 +8,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/v1/", include("apps.users.api.urls"), name="users"),
     path("api/v1/accounts/", include("apps.accounts.api.urls"), name="accounts"),
-    path("api/v1/other/", include("apps.other.api.urls"), name="other"),
+    path("api/v1/", include("apps.other.api.urls"), name="other"),
 ]
 
 # Media Assets

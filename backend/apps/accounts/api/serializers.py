@@ -1,6 +1,6 @@
 from apps.accounts.models import EMPLOY_OPTIONS, CandidateProfile, RecruiterProfile
 from apps.other.api.serializers import ShortCompanySerializer
-from apps.other.models import Category
+from apps.other.models import Category, Company
 from django_countries.serializer_fields import CountryField
 from rest_framework import serializers
 from taggit.serializers import TaggitSerializer, TagListSerializerField
@@ -88,3 +88,7 @@ class RecruiterProfileSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         )
+
+
+class UpdateRecruiterProfileSerializer(RecruiterProfileSerializer):
+    company = serializers.SlugRelatedField(slug_field="name", queryset=Company.objects.all())
