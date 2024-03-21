@@ -42,6 +42,8 @@ FIND_JOB = Choices(
 
 
 class CandidateProfile(TimeStampedModel):
+    """Candidate Profile Model."""
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="candidate_profile")
     first_name = models.CharField(max_length=50, blank=True)
     last_name = models.CharField(max_length=50, blank=True)
@@ -69,6 +71,8 @@ class CandidateProfile(TimeStampedModel):
 
 
 class RecruiterProfile(TimeStampedModel):
+    """Recruiter Profile Model."""
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="recruiter_profile")
     first_name = models.CharField(max_length=50, blank=True)
     last_name = models.CharField(max_length=50, blank=True)
@@ -87,6 +91,8 @@ class RecruiterProfile(TimeStampedModel):
 
 
 class ContactCv(TimeStampedModel):
+    """Contact Cv Model."""
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="contact_cv")
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)

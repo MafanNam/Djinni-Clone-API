@@ -81,6 +81,8 @@ class RecruiterProfileUserAPIView(generics.RetrieveUpdateAPIView):
 
 
 class ContactCvDetailAPIView(generics.RetrieveUpdateAPIView):
+    """Detail Contact Cv. Only candidate can edit contact details."""
+
     permission_classes = [CandidateRequiredPermission]
     serializer_class = ContactCvSerializer
 

@@ -22,7 +22,7 @@ def delete_old_file(path_file):
 
 
 def get_path_upload_image_company(instance, filename):
-    return os.path.join("companies", instance.name, "_", str(instance.user.id), filename)
+    return os.path.join("companies", f"{instance.name}_{str(instance.user.id)}", filename)
 
 
 def get_path_upload_cv_file_contact_cv(instance, filename):

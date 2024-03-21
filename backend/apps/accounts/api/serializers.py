@@ -1,15 +1,11 @@
 from apps.accounts.models import EMPLOY_OPTIONS, CandidateProfile, ContactCv, RecruiterProfile
+from apps.core.serializers import CustomMultipleChoiceField
 from apps.other.api.serializers import ShortCompanySerializer
 from apps.other.models import Category, Company
 from django_countries.serializer_fields import CountryField
 from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
 from taggit.serializers import TaggitSerializer, TagListSerializerField
-
-
-class CustomMultipleChoiceField(serializers.MultipleChoiceField):
-    def to_representation(self, value):
-        return {self.choices[item] for item in value}
 
 
 class CandidateProfileSerializer(TaggitSerializer, serializers.HyperlinkedModelSerializer):
@@ -91,6 +87,22 @@ class RecruiterProfileSerializer(serializers.ModelSerializer):
         )
 
 
+class ShortRecruiterProfileSerializer(serializers.HyperlinkedModelSerializer):
+    country = CountryField(name_only=True)
+
+    class Meta:
+        model = RecruiterProfile
+        fields = (
+            "id",
+            "first_name",
+            "last_name",
+            "position",
+            "country",
+            "image",
+            "trust_hr",
+        )
+
+
 class UpdateRecruiterProfileSerializer(RecruiterProfileSerializer):
     company = serializers.SlugRelatedField(slug_field="name", queryset=Company.objects.all())
 
@@ -111,6 +123,4 @@ class ContactCvSerializer(serializers.ModelSerializer):
             "git_hub_url",
             "portfolio_url",
             "cv_file",
-            "created_at",
-            "updated_at",
         )
