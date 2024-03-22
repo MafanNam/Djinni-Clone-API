@@ -77,6 +77,7 @@ class FeedbackSerializer(serializers.ModelSerializer):
             "vacancy",
             "contact_cv",
             "cover_letter",
+            "is_bookmark",
             "created_at",
             "updated_at",
         )

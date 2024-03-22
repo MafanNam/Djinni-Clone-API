@@ -66,6 +66,7 @@ class Feedback(TimeStampedModel):
     vacancy = models.ForeignKey(Vacancy, on_delete=models.CASCADE, related_name="feedback_vacancy")
     contact_cv = models.ForeignKey(ContactCv, on_delete=models.SET_NULL, null=True, related_name="feedback_contact_cv")
     cover_letter = models.TextField(verbose_name=_("Cover Letter"), max_length=1000, null=True, blank=True)
+    is_bookmark = models.BooleanField(verbose_name=_("Is Bookmark"), default=False)
 
     class Meta:
         verbose_name = _("Feedback")

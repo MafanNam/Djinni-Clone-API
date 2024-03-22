@@ -4,7 +4,7 @@ from django.contrib import admin
 
 @admin.register(VacancyView)
 class VacancyViewAdmin(admin.ModelAdmin):
-    list_display = ["id", "vacancy", "user", "viewer_ip"]
+    list_display = ["id", "vacancy", "user", "viewer_ip", "created_at", "updated_at"]
     list_display_links = ["id", "vacancy"]
     list_filter = ["created_at", "updated_at"]
     search_fields = ["vacancy", "user", "viewer_ip"]

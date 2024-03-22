@@ -60,7 +60,7 @@ class VacancyDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class FeedbackListCreateAPIView(generics.ListCreateAPIView):
-    """Feedback List Create."""
+    """Feedback List Create. Recruiter can GET feedback list of vacancy. Candidate can POST feedback."""
 
     serializer_class = FeedbackSerializer
     lookup_field = "slug"
