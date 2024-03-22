@@ -55,3 +55,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         """Returns the short name of the user."""
         return self.first_name.title()
+
+    def has_candidate_profile(self):
+        if self.type_profile == TYPE_PROFILE_CHOICES.candidate:
+            return hasattr(self, "candidate_profile")
+        return False
+
+    def has_recruiter_profile(self):
+        if self.type_profile == TYPE_PROFILE_CHOICES.recruiter:
+            return hasattr(self, "recruiter_profile")
+        return False

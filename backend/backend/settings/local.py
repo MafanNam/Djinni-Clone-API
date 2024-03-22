@@ -7,9 +7,9 @@ SECRET_KEY = env("SECRET_KEY", default="django-insecure-kdxyc)gjt4qs-sk^##l54mrx
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG", default=True)
 
-if DEBUG:
-    # `debug` is only True in templates if the vistor IP is in INTERNAL_IPS.
-    INTERNAL_IPS = type("c", (), {"__contains__": lambda *a: True})()
+# if DEBUG:
+#     # `debug` is only True in templates if the vistor IP is in INTERNAL_IPS.
+#     INTERNAL_IPS = type("c", (), {"__contains__": lambda *a: True})()
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost:8080"]
 
@@ -17,9 +17,7 @@ INSTALLED_APPS += [
     "debug_toolbar",
 ]
 
-MIDDLEWARE += [
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
-]
+MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware"] + MIDDLEWARE
 
 # EMAIL
 EMAIL_BACKEND = "djcelery_email.backends.CeleryEmailBackend"
@@ -47,3 +45,7 @@ DEBUG_TOOLBAR_PANELS = [
     "debug_toolbar.panels.signals.SignalsPanel",
     "cachalot.panels.CachalotPanel",
 ]
+
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_TOOLBAR_CALLBACK": lambda x: True,
+}

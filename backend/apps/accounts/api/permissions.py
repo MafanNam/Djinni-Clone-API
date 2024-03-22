@@ -12,6 +12,11 @@ class RecruiterRequiredPermission(permissions.BasePermission):
                 return True
         return False
 
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return obj.user == request.user
+
 
 class CandidateRequiredPermission(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -19,3 +24,8 @@ class CandidateRequiredPermission(permissions.BasePermission):
             if request.user.type_profile == TYPE_PROFILE_CHOICES.candidate:
                 return True
         return False
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return obj.user == request.user
