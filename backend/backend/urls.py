@@ -10,6 +10,7 @@ urlpatterns = [
     path("api/v1/accounts/", include("apps.accounts.api.urls"), name="accounts"),
     path("api/v1/vacancies/", include("apps.vacancy.api.urls"), name="vacancies"),
     path("api/v1/", include("apps.other.api.urls"), name="other"),
+    path("api/v1/chats/", include("apps.chat.api.urls"), name="chats"),
 ]
 
 # Media Assets

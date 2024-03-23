@@ -1,4 +1,8 @@
+from datetime import timedelta
+
+from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.core.cache import cache
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -65,3 +69,42 @@ class User(AbstractBaseUser, PermissionsMixin):
         if self.type_profile == TYPE_PROFILE_CHOICES.recruiter:
             return hasattr(self, "recruiter_profile")
         return False
+
+    # def last_seen(self):
+    #     return cache.get(f"last_seen_{self.id}")
+    #
+    # def online(self):
+    #     if self.last_seen():
+    #         now = datetime.now()
+    #         if now > (self.last_seen() + timedelta(seconds=settings.USER_ONLINE_TIMEOUT)):
+    #             return False
+    #         else:
+    #             return True
+    #     else:
+    #         return False
+
+
+class OnlineStatus(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    last_login = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = _("Online Status")
+        verbose_name_plural = _("Online Status")
+        ordering = ["-last_login"]
+
+    def __str__(self):
+        return f"{self.user.get_short_name} last login at UTC {self.last_login.strftime('%Y/%m/%d %H:%M')}"
+
+    def get_last_active(self):
+        cache_key = f"{self.user.get_short_name}_last_login"
+
+        if not cache.get(cache_key):
+            cache.set(cache_key, self.last_login, settings.USER_LAST_LOGIN_EXPIRE)
+        return cache.get(cache_key)
+
+    def is_online(self):
+        now = timezone.now()
+        if self.get_last_active() < now - timedelta(seconds=settings.USER_ONLINE_TIMEOUT):
+            return False
+        return True

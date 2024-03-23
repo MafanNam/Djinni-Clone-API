@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
 
 from .forms import UserChangeForm, UserCreationForm
-from .models import User
+from .models import OnlineStatus, User
 
 
 @admin.register(User)
@@ -22,6 +22,8 @@ class UserAdmin(BaseUserAdmin):
         "is_staff",
         "is_active",
     ]
+
+    list_editable = ["is_active"]
 
     list_display_links = ["id", "email"]
 
@@ -61,3 +63,9 @@ class UserAdmin(BaseUserAdmin):
         ),
     )
     search_fields = ["email", "first_name", "last_name"]
+
+
+@admin.register(OnlineStatus)
+class OnlineStatusAdmin(admin.ModelAdmin):
+    list_display = ("id", "user", "last_login")
+    list_display_links = ("id", "user")
