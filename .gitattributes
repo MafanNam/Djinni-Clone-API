@@ -1,3 +1,6 @@
-Dockerfile eol=lf
-*.yml text eol=lf
-*.sh text eol=lf
+# Top-most EditorConfig file
+root = true
+
+# Unix-style newlines with a newline at the end of the file
+[*]
+eol = lf
