@@ -1,10 +1,10 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import Group
 from django.utils.translation import gettext_lazy as _
 
 from .forms import UserChangeForm, UserCreationForm
 from .models import OnlineUser, User
-
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
@@ -18,7 +18,7 @@ class UserAdmin(BaseUserAdmin):
         "email",
         "first_name",
         "last_name",
-        "type_profile",
+        "get_type_profile_display",
         "is_staff",
         "is_active",
     ]
@@ -41,7 +41,8 @@ class UserAdmin(BaseUserAdmin):
                     "is_superuser",
                     "groups",
                     "user_permissions",
-                )
+                ),
+                "classes": ("collapse",),
             },
         ),
         (_("Important Dates"), {"fields": ("last_login", "date_joined")}),
@@ -54,18 +55,4 @@ class UserAdmin(BaseUserAdmin):
                 "fields": (
                     "email",
                     "first_name",
-                    "last_name",
-                    "type_profile",
-                    "password1",
-                    "password2",
-                ),
-            },
-        ),
-    )
-    search_fields = ["email", "first_name", "last_name"]
-
-
-@admin.register(OnlineUser)
-class OnlineUserAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "last_login")
-    list_display_links = ("id", "user")
+                
