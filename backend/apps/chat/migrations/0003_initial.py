@@ -20,7 +20,9 @@ class Migration(migrations.Migration):
             model_name="chatroom",
             name="feedback",
             field=models.OneToOneField(
-                on_delete=django.db.models.deletion.CASCADE, related_name="feedback_chatroom", to="vacancy.feedback"
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="chatroom_feedback",
+                to="vacancy.feedback",
             ),
         ),
         migrations.AddField(
@@ -28,7 +30,7 @@ class Migration(migrations.Migration):
             name="recruiter",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name="recruiter_chatroom",
+                related_name="recruiter_chatrooms",
                 to=settings.AUTH_USER_MODEL,
             ),
         ),
@@ -38,12 +40,13 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
-                related_name="chat_messages",
+                related_name="messages",
                 to="chat.chatroom",
             ),
         ),
         migrations.AlterUniqueTogether(
             name="chatroom",
-            unique_together={("candidate", "recruiter", "feedback")},
+            unique_together={("recruiter", "candidate", "feedback")},
         ),
     ]
+
