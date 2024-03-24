@@ -1,83 +1,62 @@
-version: '3.11'
-
+version: '3.8'
 
 services:
-    server:
-        restart: unless-stopped
-        build:
-            context: .
-            dockerfile: docker/local/backend/Dockerfile
-        entrypoint: /app/docker/backend/server-entrypoint.sh
-        volumes:
-            - static_volume:/app/backend/staticfiles
-            - media_volume:/app/backend/mediafiles
-#        expose:
-#            - "8000:8000"
-        ports:
-          - "8000:8000"
-        env_file:
-            - ./.envs/.local/django.env
-        networks:
-            - djinni-clone-api
-    worker:
-        restart: unless-stopped
-        build:
-            context: .
-            dockerfile: docker/local/backend/Dockerfile
-        entrypoint: /app/docker/backend/worker-entrypoint.sh
-        volumes:
-            - static_volume:/app/backend/staticfiles
-        env_file:
-            - ./.envs/.local/django.env
-        depends_on:
-            - server
-            - redis
-        networks:
-            - djinni-clone-api
-    celery-beat:
-        restart: unless-stopped
-        build:
-            context: .
-            dockerfile: docker/local/backend/Dockerfile
-        entrypoint: /app/docker/backend/celery-beat-entrypoint.sh
-        volumes:
-            - static_volume:/app/backend/staticfiles
-        env_file:
-            - ./.envs/.local/django.env
-        depends_on:
-            - server
-            - redis
-            - worker
-        networks:
-            - djinni-clone-api
-    flower:
-        restart: unless-stopped
-        image: mher/flower
-        command: celery flower --persisten=True
-        env_file:
-            - ./.envs/.local/django.env
-        ports:
-            - "5555:5555"
-        volumes:
-            - flower_data:/data
-        depends_on:
-            - worker
-            - redis
-        networks:
-            - djinni-clone-api
-    redis:
-        restart: unless-stopped
-        image: redis:7.0.5-alpine
-        expose:
-            - "6379"
-        networks:
-            - djinni-clone-api
+  server:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: docker/local/backend/Dockerfile
+    entrypoint: /app/docker/backend/server-entrypoint.sh
+    volumes:
+      - static_volume:/app/backend/staticfiles
+      - media_volume:/app/backend/mediafiles
+    ports:
+      - "8000:8000"
+    env_file:
+      - .envs/.local/django.env
+    networks:
+      - djinni-clone-api
+    depends_on:
+      - redis
 
-networks:
-  djinni-clone-api:
-    driver: bridge
+  worker:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: docker/local/backend/Dockerfile
+    entrypoint: /app/docker/backend/worker-entrypoint.sh
+    volumes:
+      - static_volume:/app/backend/staticfiles
+    env_file:
+      - .envs/.local/django.env
+    networks:
+      - djinni-clone-api
+    depends_on:
+      - server
+      - redis
 
-volumes:
-    static_volume:
-    media_volume:
-    flower_data: {}
+  celery-beat:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: docker/local/backend/Dockerfile
+    entrypoint: /app/docker/backend/celery-beat-entrypoint.sh
+    volumes:
+      - static_volume:/app/backend/staticfiles
+    env_file:
+      - .envs/.local/django.env
+    networks:
+      - djinni-clone-api
+    depends_on:
+      - server
+      - redis
+      - worker
+
+  flower:
+    restart: unless-stopped
+    image: mher/flower:2.0.0
+    command: celery flower --persistent=True --broker=redis://redis:6379/0
+    env_file:
+      - .envs/.local/django.env
+    ports:
+      - "5555:555
