@@ -8,11 +8,15 @@ https://docs.djangoproject.com/en/5.0/howto/deployment/asgi/
 """
 
 import os
-
 from django.core.asgi import get_asgi_application
-from environ import Env
+import environ
 
-env = Env()
+env = environ.Env()
+environ.Env.read_env()
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", env("DJANGO_SETTINGS_MODULE", default="backend.settings.local"))
+os.environ.setdefault(
+    "DJANGO_SETTINGS_MODULE", env.str("DJANGO_SETTINGS_MODULE", default="backend.settings.local")
+)
+
 application = get_asgi_application()
+
