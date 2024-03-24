@@ -1,8 +1,5 @@
--r base.txt
+# .tool-versions
 
-psycopg2-binary==2.9.9
+python=3.9.7
+pip==21.2.4
 
-flake8==7.0.0
-black==24.3.0
-isort==5.13.2
-pre-commit==3.6.2
