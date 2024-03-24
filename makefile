@@ -1,54 +1,26 @@
-clean:
-	pre-commit run --all-files
-build:
-	docker compose -f local.yml up --build -d --remove-orphans
-build-log:
-	docker compose -f local.yml up --build
+# General commands
+pre-commit-run = pre-commit run --all-files
+docker-compose = docker compose -f local.yml
 
-up:
-	docker compose -f local.yml up -d
+# Build and run
+.build = docker-compose up --build -d --remove-orphans
+.up = docker-compose up -d
+.down = docker-compose down
+.show-logs = docker-compose logs
+.show-logs-api = docker-compose logs server
 
-down:
-	docker compose -f local.yml down
+# Database management
+.volume = docker volume inspect local_postgres_data
+.djinni-db = docker-compose exec postgres psql --username=mafan --dbname=djinni-live
 
-show-logs:
-	docker compose -f local.yml logs
+# Django management commands
+.backend = cd backend &&
+.collectstatic = .backend python manage.py collectstatic --no-input --clear
+.createsuperuser = .backend python manage.py createsuperuser
+.makemigrations = .backend python manage.py makemigrations
+.migrate = .backend python manage.py migrate
 
-show-logs-api:
-	docker compose -f local.yml logs server
-
-#makemigrations:
-#	docker compose -f local.yml run --rm server python manage.py makemigrations
-#
-#migrate:
-#	docker compose -f local.yml run --rm server python manage.py migrate
-
-collectstatic:
-	docker compose -f local.yml run --rm server python manage.py collectstatic --no-input --clear
-
-createsuperuser:
-	cd backend & python manage.py createsuperuser
-
-makemigrations:
-	cd backend & python manage.py makemigrations
-
-migrate:
-	cd backend & python manage.py migrate
-
-down-v:
-	docker compose -f local.yml down -v
-
-volume:
-	docker volume inspect local_postgres_data
-
-djinni-db:
-	docker compose -f local.yml exec postgres psql --username=mafan --dbname=djinni-live
-
-cov:
-	docker compose -f local.yml run --rm server pytest -p no:warnings --cov=. -v
-
-cov-gen:
-	docker compose -f local.yml run --rm server pytest -p no:warnings --cov=. --cov-report html
-
-tests:
-	docker compose -f local.yml run --rm server pytest
+# Testing
+.cov = docker-compose run --rm server pytest -p no:warnings --cov=. -v
+.cov-gen = docker-compose run --rm server pytest -p no:warnings --cov=. --cov-report html
+.tests = docker-compose run --rm server pytest
