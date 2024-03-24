@@ -22,33 +22,4 @@ class Migration(migrations.Migration):
             field=models.OneToOneField(
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="candidate_profile",
-                to=settings.AUTH_USER_MODEL,
-            ),
-        ),
-        migrations.AddField(
-            model_name="contactcv",
-            name="user",
-            field=models.OneToOneField(
-                on_delete=django.db.models.deletion.CASCADE, related_name="contact_cv", to=settings.AUTH_USER_MODEL
-            ),
-        ),
-        migrations.AddField(
-            model_name="recruiterprofile",
-            name="company",
-            field=models.ForeignKey(
-                null=True,
-                on_delete=django.db.models.deletion.SET_NULL,
-                related_name="recruiter_profile",
-                to="other.company",
-            ),
-        ),
-        migrations.AddField(
-            model_name="recruiterprofile",
-            name="user",
-            field=models.OneToOneField(
-                on_delete=django.db.models.deletion.CASCADE,
-                related_name="recruiter_profile",
-                to=settings.AUTH_USER_MODEL,
-            ),
-        ),
-    ]
+              
