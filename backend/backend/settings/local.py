@@ -17,6 +17,10 @@ INSTALLED_APPS += [
     "debug_toolbar",
 ]
 
+# MIDDLEWARE += [
+#     "apps.users.middleware.JWTFromCookieMiddleware",
+# ]
+
 MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware"] + MIDDLEWARE
 
 # EMAIL

@@ -14,7 +14,6 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         serializer = self.get_serializer(data=request.data)
         email_ = request.data["email"]
         password = request.data["password"]
-        print("test")
 
         if authenticate(email=email_, password=password) is None:
             user = get_object_or_404(User, email=email_)
@@ -37,6 +36,8 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             raise InvalidToken(e.args[0])
 
         response = Response(serializer.validated_data, status=status.HTTP_200_OK)
+
+        # TODO: Change when deploy. Off setCookie
         response.set_cookie("access_token", serializer.validated_data["access"])
         return response
         # return Response(serializer.validated_data, status=status.HTTP_200_OK)

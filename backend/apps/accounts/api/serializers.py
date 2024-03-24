@@ -66,6 +66,21 @@ class UpdateCandidateProfileSerializer(TaggitSerializer, serializers.Hyperlinked
         )
 
 
+class ShortCandidateProfileSerializer(serializers.HyperlinkedModelSerializer):
+    country = CountryField(name_only=True)
+
+    class Meta:
+        model = CandidateProfile
+        fields = (
+            "id",
+            "first_name",
+            "last_name",
+            "position",
+            "country",
+            "image",
+        )
+
+
 class RecruiterProfileSerializer(serializers.ModelSerializer):
     country = CountryField(name_only=True)
     trust_hr = serializers.BooleanField(read_only=True)

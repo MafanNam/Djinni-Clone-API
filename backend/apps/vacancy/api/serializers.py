@@ -28,7 +28,6 @@ class VacancySerializer(TaggitSerializer, serializers.HyperlinkedModelSerializer
     class Meta:
         model = Vacancy
         fields = (
-            "id",
             "recruiter",
             "company",
             "title",
@@ -64,10 +63,23 @@ class VacancySerializer(TaggitSerializer, serializers.HyperlinkedModelSerializer
         return Feedback.objects.filter(vacancy=obj).count()
 
 
+class ShortVacancySerializer(VacancySerializer):
+    class Meta:
+        model = Vacancy
+        fields = (
+            "slug",
+            "title",
+            "company",
+            "employ_options",
+            "created_at",
+            "updated_at",
+        )
+
+
 class FeedbackSerializer(serializers.ModelSerializer):
     candidate = serializers.SerializerMethodField()
     contact_cv = ContactCvSerializer(read_only=True, many=False)
-    vacancy = serializers.CharField(source="vacancy.title", read_only=True)
+    vacancy = ShortVacancySerializer(read_only=True, many=False)
 
     class Meta:
         model = Feedback
@@ -77,7 +89,6 @@ class FeedbackSerializer(serializers.ModelSerializer):
             "vacancy",
             "contact_cv",
             "cover_letter",
-            "is_bookmark",
             "created_at",
             "updated_at",
         )
@@ -87,3 +98,14 @@ class FeedbackSerializer(serializers.ModelSerializer):
         return CandidateProfileSerializer(
             obj.user.candidate_profile, context={"request": self.context["request"]}, many=False
         ).data
+
+
+class ShortFeedbackSerializer(FeedbackSerializer):
+    contact_cv = ContactCvSerializer(read_only=True, many=False)
+
+    class Meta:
+        model = Feedback
+        fields = (
+            "vacancy",
+            "contact_cv",
+        )

@@ -60,7 +60,8 @@ class VacancyDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class FeedbackListCreateAPIView(generics.ListCreateAPIView):
-    """Feedback List Create. Recruiter can GET feedback list of vacancy. Candidate can POST feedback."""
+    """Feedback List Create. Recruiter can GET feedback list of vacancy. Candidate can POST feedback.
+    After creating feedback, is created ChatRoom and ChatMessage."""
 
     serializer_class = FeedbackSerializer
     lookup_field = "slug"
@@ -84,23 +85,23 @@ class FeedbackListCreateAPIView(generics.ListCreateAPIView):
         return super().get_permissions()
 
 
-class CandidateFeedbackListAPIView(generics.ListAPIView):
-    """Candidate Feedback List APIView. Only candidate can view self feedback."""
+# class CandidateFeedbackListAPIView(generics.ListAPIView):
+#     """Candidate Feedback List APIView. Only candidate can view self feedback."""
+#
+#     serializer_class = FeedbackSerializer
+#     permission_classes = [CandidateRequiredPermission]
+#
+#     def get_queryset(self):
+#         queryset = Feedback.objects.filter(user=self.request.user)
+#         return queryset
 
-    serializer_class = FeedbackSerializer
-    permission_classes = [CandidateRequiredPermission]
 
-    def get_queryset(self):
-        queryset = Feedback.objects.filter(user=self.request.user)
-        return queryset
-
-
-class CandidateFeedbackDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    """Candidate Feedback Detail APIView. Only candidate can edit or delete self feedback"""
-
-    serializer_class = FeedbackSerializer
-    permission_classes = [CandidateRequiredPermission]
-
-    def get_queryset(self):
-        queryset = Feedback.objects.filter(user=self.request.user)
-        return queryset
+# class CandidateFeedbackDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+#     """Candidate Feedback Detail APIView. Only candidate can edit or delete self feedback"""
+#
+#     serializer_class = FeedbackSerializer
+#     permission_classes = [CandidateRequiredPermission]
+#
+#     def get_queryset(self):
+#         queryset = Feedback.objects.filter(user=self.request.user)
+#         return queryset

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "apps.accounts",
     "apps.vacancy",
     "apps.other",
+    "apps.chat",
 ]
 
 MIDDLEWARE = [
@@ -57,7 +58,9 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # TODO: Delete JWTFromCookieMiddleware
     "apps.users.middleware.JWTFromCookieMiddleware",
+    "apps.users.middleware.OnlineStatusMiddleware",
 ]
 
 ROOT_URLCONF = "backend.urls"
@@ -145,6 +148,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # DEFAULT USER MODEL
 
 AUTH_USER_MODEL = "users.User"
+
+USER_ONLINE_TIMEOUT = env("USER_ONLINE_TIMEOUT", default=300)
+USER_LAST_LOGIN_EXPIRE = env("USER_LAST_LOGIN_EXPIRE", default=60 * 60 * 24 * 7)
 
 # CELERY
 CELERY_BROKER_URL = env("CELERY_BROKER_URL", default="redis://localhost:6379/0")
