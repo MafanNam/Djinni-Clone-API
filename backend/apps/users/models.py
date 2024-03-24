@@ -8,12 +8,9 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from model_utils import Choices
 
-from .managers import CustomUserManager
-
-TYPE_PROFILE_CHOICES = Choices(
-    ("candidate", _("Candidate")),
-    ("recruiter", _("Recruiter")),
-)
+class ProfileType(Choices):
+    CANDIDATE = ("candidate", _("Candidate"))
+    RECRUITER = ("recruiter", _("Recruiter"))
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -23,11 +20,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(verbose_name=_("first name"), max_length=50)
     last_name = models.CharField(verbose_name=_("last name"), max_length=50)
     email = models.EmailField(verbose_name=_("email address"), db_index=True, unique=True)
-    type_profile = models.CharField(
-        verbose_name=_("type profile"),
+    profile_type = models.CharField(
+        verbose_name=_("profile type"),
         max_length=20,
-        choices=TYPE_PROFILE_CHOICES,
-        default=TYPE_PROFILE_CHOICES.candidate,
+        choices=ProfileType.choices,
+        default=ProfileType.CANDIDATE,
     )
 
     # User permissions
@@ -69,27 +66,14 @@ class User(AbstractBaseUser, PermissionsMixin):
             return self.recruiter_profile
 
     def has_candidate_profile(self):
-        if self.type_profile == TYPE_PROFILE_CHOICES.candidate:
+        if self.profile_type == ProfileType.CANDIDATE:
             return hasattr(self, "candidate_profile")
         return False
 
     def has_recruiter_profile(self):
-        if self.type_profile == TYPE_PROFILE_CHOICES.recruiter:
+        if self.profile_type == ProfileType.RECRUITER:
             return hasattr(self, "recruiter_profile")
         return False
-
-    # def last_seen(self):
-    #     return cache.get(f"last_seen_{self.id}")
-    #
-    # def online(self):
-    #     if self.last_seen():
-    #         now = datetime.now()
-    #         if now > (self.last_seen() + timedelta(seconds=settings.USER_ONLINE_TIMEOUT)):
-    #             return False
-    #         else:
-    #             return True
-    #     else:
-    #         return False
 
 
 class OnlineUser(models.Model):
