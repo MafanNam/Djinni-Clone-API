@@ -7,7 +7,7 @@ from apps.accounts.api.serializers import (
 )
 from apps.accounts.models import CandidateProfile, ContactCv, RecruiterProfile
 from django.http import Http404
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, filters, throttling
 
 from .permissions import CandidateRequiredPermission, RecruiterRequiredPermission
 
@@ -18,6 +18,12 @@ class CandidateProfileListAPIView(generics.ListAPIView):
     queryset = CandidateProfile.objects.all()
     serializer_class = CandidateProfileSerializer
     permission_classes = [permissions.AllowAny]
+    pagination_class = generics.PageNumberPagination
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ["user__first_name", "user__last_name"]
+    ordering_fields = ["user__first_name", "user__last_name"]
+    search_fields = ["user__first_name", "user__last_name"]
+    throttle_classes = [throttling.AnonRateThrottle, throttling.UserRateThrottle]
 
 
 class CandidateProfileDetailAPIView(generics.RetrieveAPIView):
@@ -25,6 +31,8 @@ class CandidateProfileDetailAPIView(generics.RetrieveAPIView):
 
     serializer_class = CandidateProfileSerializer
     permission_classes = [permissions.AllowAny]
+    lookup_field = "pk"
+    lookup_url_kwarg = "candidate_profile_id"
 
     def get_queryset(self):
         queryset = CandidateProfile.objects.select_related("user")
@@ -35,6 +43,8 @@ class CandidateProfileUserAPIView(generics.RetrieveUpdateAPIView):
     """Detail Update Candidate Profile. Only candidate can edit profile."""
 
     permission_classes = [CandidateRequiredPermission]
+    lookup_field = "pk"
+    lookup_url_kwarg = "candidate_profile_id"
 
     def get_object(self):
         candidate_profile = self.request.user.candidate_profile
@@ -52,6 +62,12 @@ class RecruiterProfileListAPIView(generics.ListAPIView):
     queryset = RecruiterProfile.objects.all()
     serializer_class = RecruiterProfileSerializer
     permission_classes = [permissions.AllowAny]
+    pagination_class = generics.PageNumberPagination
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ["user__first_name", "user__last_name"]
+    ordering_fields = ["user__first_name", "user__last_name"]
+    search_fields = ["user__first_name", "user__last_name"]
+    throttle_classes = [throttling.AnonRateThrottle, throttling.UserRateThrottle]
 
 
 class RecruiterProfileDetailAPIView(generics.RetrieveAPIView):
@@ -59,6 +75,8 @@ class RecruiterProfileDetailAPIView(generics.RetrieveAPIView):
 
     serializer_class = RecruiterProfileSerializer
     permission_classes = [permissions.AllowAny]
+    lookup_field = "pk"
+    lookup_url_kwarg = "recruiter_profile_id"
 
     def get_queryset(self):
         queryset = RecruiterProfile.objects.select_related("user")
@@ -69,6 +87,8 @@ class RecruiterProfileUserAPIView(generics.RetrieveUpdateAPIView):
     """Detail Update Recruiter Profile. Only recruiter can edit profile."""
 
     permission_classes = [RecruiterRequiredPermission]
+    lookup_field = "pk"
+    lookup_url_kwarg = "recruiter_profile_id"
 
     def get_object(self):
         recruiter_profile = self.request.user.recruiter_profile
@@ -77,18 +97,4 @@ class RecruiterProfileUserAPIView(generics.RetrieveUpdateAPIView):
     def get_serializer_class(self):
         if self.request.method == "GET":
             return RecruiterProfileSerializer
-        return UpdateRecruiterProfileSerializer
-
-
-class ContactCvDetailAPIView(generics.RetrieveUpdateAPIView):
-    """Detail Contact Cv. Only candidate can edit contact details."""
-
-    permission_classes = [CandidateRequiredPermission]
-    serializer_class = ContactCvSerializer
-
-    def get_object(self):
-        try:
-            contact_cv = self.request.user.contact_cv
-        except ContactCv.DoesNotExist:
-            raise Http404
-        return contact_cv
+        return UpdateRec
