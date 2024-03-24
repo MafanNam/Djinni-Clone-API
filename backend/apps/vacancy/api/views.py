@@ -84,23 +84,23 @@ class FeedbackListCreateAPIView(generics.ListCreateAPIView):
         return super().get_permissions()
 
 
-class CandidateFeedbackListAPIView(generics.ListAPIView):
-    """Candidate Feedback List APIView. Only candidate can view self feedback."""
+# class CandidateFeedbackListAPIView(generics.ListAPIView):
+#     """Candidate Feedback List APIView. Only candidate can view self feedback."""
+#
+#     serializer_class = FeedbackSerializer
+#     permission_classes = [CandidateRequiredPermission]
+#
+#     def get_queryset(self):
+#         queryset = Feedback.objects.filter(user=self.request.user)
+#         return queryset
 
-    serializer_class = FeedbackSerializer
-    permission_classes = [CandidateRequiredPermission]
 
-    def get_queryset(self):
-        queryset = Feedback.objects.filter(user=self.request.user)
-        return queryset
-
-
-class CandidateFeedbackDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    """Candidate Feedback Detail APIView. Only candidate can edit or delete self feedback"""
-
-    serializer_class = FeedbackSerializer
-    permission_classes = [CandidateRequiredPermission]
-
-    def get_queryset(self):
-        queryset = Feedback.objects.filter(user=self.request.user)
-        return queryset
+# class CandidateFeedbackDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+#     """Candidate Feedback Detail APIView. Only candidate can edit or delete self feedback"""
+#
+#     serializer_class = FeedbackSerializer
+#     permission_classes = [CandidateRequiredPermission]
+#
+#     def get_queryset(self):
+#         queryset = Feedback.objects.filter(user=self.request.user)
+#         return queryset

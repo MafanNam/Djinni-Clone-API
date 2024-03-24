@@ -1,9 +1,8 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 
-from apps.users.models import OnlineStatus
+from apps.users.models import OnlineUser
 from django.conf import settings
 from django.core.cache import cache
-from django.utils import timezone
 from django.utils.deprecation import MiddlewareMixin
 
 
@@ -44,11 +43,12 @@ class OnlineStatusMiddleware(MiddlewareMixin):
     def process_request(self, request):
         if request.user.is_authenticated:
             cache_key = f"{request.user.get_short_name}_last_login"
-            now = timezone.now()
+            now = datetime.now()
+            print(request.user)
 
             if not cache.get(cache_key):
                 print("### cache not found ###")
-                obj, created = OnlineStatus.objects.get_or_create(user=request.user)
+                obj, created = OnlineUser.objects.get_or_create(user=request.user)
                 if not created:
                     print("### login before ###")
                     obj.last_login = now
@@ -58,9 +58,9 @@ class OnlineStatusMiddleware(MiddlewareMixin):
                 print("### cache found ###")
                 limit = now - timedelta(seconds=settings.USER_ONLINE_TIMEOUT)
 
-                if cache.get(cache_key) < limit:
+                if cache.get(cache_key).isoformat() < limit.isoformat():
                     print("### renew login ###")
-                    obj = OnlineStatus.objects.get(user=request.user)
+                    obj, _ = OnlineUser.objects.get_or_create(user=request.user)
                     obj.last_login = now
                     obj.save()
                 cache.set(cache_key, now, settings.USER_LAST_LOGIN_EXPIRE)

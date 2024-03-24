@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
 
 from .forms import UserChangeForm, UserCreationForm
-from .models import OnlineStatus, User
+from .models import OnlineUser, User
 
 
 @admin.register(User)
@@ -65,7 +65,7 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ["email", "first_name", "last_name"]
 
 
-@admin.register(OnlineStatus)
-class OnlineStatusAdmin(admin.ModelAdmin):
+@admin.register(OnlineUser)
+class OnlineUserAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "last_login")
     list_display_links = ("id", "user")

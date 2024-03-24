@@ -1,4 +1,5 @@
 from apps.core.models import TimeStampedModel
+from apps.vacancy.models import Feedback
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -11,6 +12,7 @@ class ChatRoom(TimeStampedModel):
     room_id = ShortUUIDField()
     candidate = models.ForeignKey(User, on_delete=models.CASCADE, related_name="candidate_chatroom")
     recruiter = models.ForeignKey(User, on_delete=models.CASCADE, related_name="recruiter_chatroom")
+    feedback = models.OneToOneField(Feedback, on_delete=models.CASCADE, related_name="feedback_chatroom")
 
     class Meta:
         ordering = ("created_at",)
@@ -25,6 +27,7 @@ class ChatMessage(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="chat_message")
     chat = models.ForeignKey(ChatRoom, on_delete=models.SET_NULL, null=True, related_name="chat_messages")
     message = models.CharField(max_length=255)
+    is_read = models.BooleanField(default=False)
 
     class Meta:
         ordering = ("created_at",)

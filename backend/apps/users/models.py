@@ -60,6 +60,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         """Returns the short name of the user."""
         return self.first_name.title()
 
+    @property
+    def get_profile(self):
+        """Returns the profile of the user."""
+        if self.has_candidate_profile():
+            return self.candidate_profile
+        elif self.has_recruiter_profile():
+            return self.recruiter_profile
+
     def has_candidate_profile(self):
         if self.type_profile == TYPE_PROFILE_CHOICES.candidate:
             return hasattr(self, "candidate_profile")
@@ -84,8 +92,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     #         return False
 
 
-class OnlineStatus(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+class OnlineUser(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="online_user")
     last_login = models.DateTimeField(auto_now=True)
 
     class Meta:

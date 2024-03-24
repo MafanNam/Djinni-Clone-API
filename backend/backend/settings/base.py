@@ -58,7 +58,9 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "apps.users.middleware.OnlineStatusMiddleware",
+    # TODO: Delete JWTFromCookieMiddleware
+    "apps.users.middleware.JWTFromCookieMiddleware",
+    # "apps.users.middleware.OnlineStatusMiddleware",
 ]
 
 ROOT_URLCONF = "backend.urls"
@@ -147,7 +149,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "users.User"
 
-USER_ONLINE_TIMEOUT = env("USER_ONLINE_TIMEOUT", default=600)
+USER_ONLINE_TIMEOUT = env("USER_ONLINE_TIMEOUT", default=300)
 USER_LAST_LOGIN_EXPIRE = env("USER_LAST_LOGIN_EXPIRE", default=60 * 60 * 24 * 7)
 
 # CELERY
