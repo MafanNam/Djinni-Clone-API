@@ -17,17 +17,23 @@ show-logs:
 show-logs-api:
 	docker compose -f local.yml logs server
 
-makemigrations:
-	docker compose -f local.yml run --rm server python manage.py makemigrations
-
-migrate:
-	docker compose -f local.yml run --rm server python manage.py migrate
+#makemigrations:
+#	docker compose -f local.yml run --rm server python manage.py makemigrations
+#
+#migrate:
+#	docker compose -f local.yml run --rm server python manage.py migrate
 
 collectstatic:
 	docker compose -f local.yml run --rm server python manage.py collectstatic --no-input --clear
 
-superuser:
-	docker compose -f local.yml run --rm server python manage.py createsuperuser
+createsuperuser:
+	cd backend & python manage.py createsuperuser
+
+makemigrations:
+	cd backend & python manage.py makemigrations
+
+migrate:
+	cd backend & python manage.py migrate
 
 down-v:
 	docker compose -f local.yml down -v

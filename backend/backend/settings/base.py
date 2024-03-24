@@ -60,7 +60,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     # TODO: Delete JWTFromCookieMiddleware
     "apps.users.middleware.JWTFromCookieMiddleware",
-    # "apps.users.middleware.OnlineStatusMiddleware",
+    "apps.users.middleware.OnlineStatusMiddleware",
 ]
 
 ROOT_URLCONF = "backend.urls"

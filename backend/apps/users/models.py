@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
@@ -112,7 +112,7 @@ class OnlineUser(models.Model):
         return cache.get(cache_key)
 
     def is_online(self):
-        now = timezone.now()
+        now = datetime.now()
         if self.get_last_active() < now - timedelta(seconds=settings.USER_ONLINE_TIMEOUT):
             return False
         return True

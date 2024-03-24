@@ -7,6 +7,8 @@ from .serializers import ChatMessageSerializer, ChatRoomSerializer
 
 
 class ChatRoomListAPIView(generics.ListAPIView):
+    """Chat Room List APIView."""
+
     serializer_class = ChatRoomSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -19,6 +21,8 @@ class ChatRoomListAPIView(generics.ListAPIView):
 
 
 class ChatMessagesListCreateAPIView(generics.ListCreateAPIView):
+    """Chat Messages List Create APIView."""
+
     serializer_class = ChatMessageSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -37,6 +41,8 @@ class ChatMessagesListCreateAPIView(generics.ListCreateAPIView):
 
 
 class ChatMessagesDeleteUpdateAPIView(generics.DestroyAPIView, generics.UpdateAPIView):
+    """Chat Messages Delete Update APIView."""
+
     serializer_class = ChatMessageSerializer
     permission_classes = [permissions.IsAuthenticated]
 

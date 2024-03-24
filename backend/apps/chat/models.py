@@ -18,6 +18,7 @@ class ChatRoom(TimeStampedModel):
         ordering = ("created_at",)
         verbose_name = _("Chat Room")
         verbose_name_plural = _("Chat Rooms")
+        unique_together = ("candidate", "recruiter", "feedback")
 
     def __str__(self):
         return f"ChatRoom {self.room_id} from {self.candidate.first_name} from {self.recruiter.first_name}"
