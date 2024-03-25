@@ -15,7 +15,7 @@ from .permissions import CandidateRequiredPermission, RecruiterRequiredPermissio
 class CandidateProfileListAPIView(generics.ListAPIView):
     """List Candidate Profiles"""
 
-    queryset = CandidateProfile.objects.all()
+    queryset = CandidateProfile.objects.select_related("category").prefetch_related("skills").all()
     serializer_class = CandidateProfileSerializer
     permission_classes = [permissions.AllowAny]
 

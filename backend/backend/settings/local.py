@@ -17,11 +17,19 @@ INSTALLED_APPS += [
     "debug_toolbar",
 ]
 
-# MIDDLEWARE += [
-#     "apps.users.middleware.JWTFromCookieMiddleware",
-# ]
+MIDDLEWARE += [
+    # TODO: Delete JWTFromCookieMiddleware
+    "apps.users.middleware.JWTFromCookieMiddleware",
+]
 
 MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware"] + MIDDLEWARE
+
+# CACHE
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+    }
+}
 
 # EMAIL
 EMAIL_BACKEND = "djcelery_email.backends.CeleryEmailBackend"

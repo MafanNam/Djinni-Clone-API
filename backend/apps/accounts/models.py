@@ -97,7 +97,7 @@ class ContactCv(TimeStampedModel):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField(verbose_name=_("Email"), unique=True, max_length=254)
-    phone_number = PhoneNumberField(verbose_name=_("phone number"), max_length=30, blank=True, unique=True)
+    phone_number = PhoneNumberField(verbose_name=_("phone number"), max_length=30, blank=True)
     telegram_url = models.URLField(verbose_name=_("telegram url"), max_length=200, blank=True, null=True)
     linkedin_url = models.URLField(verbose_name=_("linkedin url"), max_length=200, blank=True, null=True)
     git_hub_url = models.URLField(verbose_name=_("git hub url"), max_length=200, blank=True, null=True)

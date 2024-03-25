@@ -17,6 +17,7 @@ class VacancyListCreateAPIView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         user = self.request.user
         recruiter_profile = self.request.user.recruiter_profile
+        print(recruiter_profile.company)
         if recruiter_profile.company:
             serializer.save(user=user, company=recruiter_profile.company)
         else:

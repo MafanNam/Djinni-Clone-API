@@ -27,7 +27,7 @@ class ChatRoom(TimeStampedModel):
 class ChatMessage(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="chat_message")
     chat = models.ForeignKey(ChatRoom, on_delete=models.SET_NULL, null=True, related_name="chat_messages")
-    message = models.CharField(max_length=255)
+    message = models.TextField(verbose_name=_("Message"), max_length=1000)
     is_read = models.BooleanField(default=False)
 
     class Meta:

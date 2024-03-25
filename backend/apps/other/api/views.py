@@ -1,5 +1,6 @@
 from apps.accounts.api.permissions import RecruiterRequiredPermission
 from rest_framework import generics, permissions, serializers
+from rest_framework.generics import get_object_or_404
 
 from ..models import Category, Company
 from .serializers import CategorySerializer, CompanySerializer
@@ -24,6 +25,17 @@ class CompanyListCreateAPIView(generics.ListCreateAPIView):
         if Company.objects.filter(user=user).exists():
             raise serializers.ValidationError({"message": "Company already exists"})
         serializer.save(user=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+
+        company = get_object_or_404(Company, user=request.user)
+
+        recruiter_profile = request.user.recruiter_profile
+        recruiter_profile.company = company
+        recruiter_profile.save()
+
+        return response
 
     def get_permissions(self):
         if self.request.method == "POST":

@@ -113,6 +113,6 @@ class OnlineUser(models.Model):
 
     def is_online(self):
         now = datetime.now()
-        if self.get_last_active() < now - timedelta(seconds=settings.USER_ONLINE_TIMEOUT):
+        if self.get_last_active() and self.get_last_active() < now - timedelta(seconds=settings.USER_ONLINE_TIMEOUT):
             return False
         return True

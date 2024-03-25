@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     "taggit",
     "multiselectfield",
     "phonenumber_field",
-    "cachalot",
     # LOCAL_APPS
     "apps.users",
     "apps.accounts",
@@ -58,9 +57,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    # TODO: Delete JWTFromCookieMiddleware
-    "apps.users.middleware.JWTFromCookieMiddleware",
-    "apps.users.middleware.OnlineStatusMiddleware",
+    # "apps.users.middleware.OnlineStatusMiddleware",
 ]
 
 ROOT_URLCONF = "backend.urls"
@@ -172,17 +169,6 @@ CELERY_CACHE_BACKEND = env("CELERY_CACHE_BACKEND", default="django-cache")
 
 # CELERY BEAT SETTINGS
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
-
-# CACHE
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": env("REDIS_CACHE_LOCATION", default="redis://localhost:6379/1"),
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        },
-    }
-}
 
 # DOC
 SPECTACULAR_SETTINGS = {
