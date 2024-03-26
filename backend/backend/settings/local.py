@@ -22,7 +22,10 @@ MIDDLEWARE += [
     "apps.users.middleware.JWTFromCookieMiddleware",
 ]
 
-MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware"] + MIDDLEWARE
+MIDDLEWARE = [
+    "django.middleware.gzip.GZipMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+] + MIDDLEWARE
 
 # CACHE
 CACHES = {

@@ -78,7 +78,9 @@ class RecruiterProfile(TimeStampedModel):
     last_name = models.CharField(max_length=50, blank=True)
     position = models.CharField(max_length=50, blank=True)
     country = models.CharField(max_length=200, null=True, choices=CountryField().choices + [("", "Select Country")])
-    company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True, related_name="recruiter_profile")
+    company = models.ForeignKey(
+        Company, on_delete=models.SET_NULL, null=True, blank=True, related_name="recruiter_profile"
+    )
     image = models.ImageField(upload_to=get_path_upload_image_recruiter, validators=[validate_image_size])
     trust_hr = models.BooleanField(default=False)
 

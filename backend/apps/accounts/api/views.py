@@ -27,7 +27,7 @@ class CandidateProfileDetailAPIView(generics.RetrieveAPIView):
     permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
-        queryset = CandidateProfile.objects.select_related("user")
+        queryset = CandidateProfile.objects.select_related("user", "category")
         return queryset
 
 
@@ -49,7 +49,7 @@ class CandidateProfileUserAPIView(generics.RetrieveUpdateAPIView):
 class RecruiterProfileListAPIView(generics.ListAPIView):
     """List Recruiter Profiles"""
 
-    queryset = RecruiterProfile.objects.all()
+    queryset = RecruiterProfile.objects.select_related("company").all()
     serializer_class = RecruiterProfileSerializer
     permission_classes = [permissions.AllowAny]
 
@@ -61,7 +61,7 @@ class RecruiterProfileDetailAPIView(generics.RetrieveAPIView):
     permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
-        queryset = RecruiterProfile.objects.select_related("user")
+        queryset = RecruiterProfile.objects.select_related("user", "company")
         return queryset
 
 
