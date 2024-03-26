@@ -6,18 +6,23 @@ from apps.accounts.api.serializers import (
     UpdateRecruiterProfileSerializer,
 )
 from apps.accounts.models import CandidateProfile, ContactCv, RecruiterProfile
+from apps.core import filters, pagination
 from django.http import Http404
+from django_filters import rest_framework as dj_filters
 from rest_framework import generics, permissions
 
 from .permissions import CandidateRequiredPermission, RecruiterRequiredPermission
 
 
 class CandidateProfileListAPIView(generics.ListAPIView):
-    """List Candidate Profiles"""
+    """List Candidate Profiles. Pagination page size is 20."""
 
     queryset = CandidateProfile.objects.select_related("category").prefetch_related("skills").all()
     serializer_class = CandidateProfileSerializer
     permission_classes = [permissions.AllowAny]
+    pagination_class = pagination.StandardResultsSetPagination
+    filter_backends = [dj_filters.DjangoFilterBackend]
+    filterset_class = filters.CandidateProfileFilter
 
 
 class CandidateProfileDetailAPIView(generics.RetrieveAPIView):
@@ -47,11 +52,14 @@ class CandidateProfileUserAPIView(generics.RetrieveUpdateAPIView):
 
 
 class RecruiterProfileListAPIView(generics.ListAPIView):
-    """List Recruiter Profiles"""
+    """List Recruiter Profiles. Pagination page size is 20."""
 
     queryset = RecruiterProfile.objects.select_related("company").all()
     serializer_class = RecruiterProfileSerializer
     permission_classes = [permissions.AllowAny]
+    pagination_class = pagination.StandardResultsSetPagination
+    filter_backends = [dj_filters.DjangoFilterBackend]
+    filterset_class = filters.RecruiterProfileFilter
 
 
 class RecruiterProfileDetailAPIView(generics.RetrieveAPIView):

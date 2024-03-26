@@ -65,6 +65,7 @@ class CandidateProfile(TimeStampedModel):
     class Meta:
         verbose_name = _("Candidate Profile")
         verbose_name_plural = _("Candidate Profiles")
+        ordering = ["-created_at"]
 
     def __str__(self):
         return f"Candidate {self.first_name} {self.last_name}"
@@ -87,6 +88,7 @@ class RecruiterProfile(TimeStampedModel):
     class Meta:
         verbose_name = _("Recruiter Profile")
         verbose_name_plural = _("Recruiter Profiles")
+        ordering = ["-created_at"]
 
     def __str__(self):
         return f"Recruiter {self.first_name} {self.last_name}"

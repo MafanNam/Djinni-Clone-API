@@ -1,6 +1,8 @@
 from apps.accounts.api.permissions import CandidateRequiredPermission, RecruiterRequiredPermission
+from apps.core import filters, pagination
 from apps.vacancy.api.serializers import FeedbackSerializer, VacancySerializer
 from apps.vacancy.models import Feedback, Vacancy, VacancyView
+from django_filters import rest_framework as dj_filters
 from rest_framework import generics, permissions, serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
@@ -8,7 +10,7 @@ from rest_framework.response import Response
 
 
 class VacancyListCreateAPIView(generics.ListCreateAPIView):
-    """Vacancy List Create. Only recruiters can create new vacancies."""
+    """Vacancy List Create. Only recruiters can create new vacancies. Pagination page size is 15."""
 
     queryset = (
         Vacancy.objects.select_related("user", "company", "category", "user__recruiter_profile")
@@ -16,6 +18,9 @@ class VacancyListCreateAPIView(generics.ListCreateAPIView):
         .all()
     )
     serializer_class = VacancySerializer
+    pagination_class = pagination.MediumResultsSetPagination
+    filter_backends = [dj_filters.DjangoFilterBackend]
+    filterset_class = filters.VacancyFilter
 
     def perform_create(self, serializer):
         user = self.request.user
@@ -64,10 +69,11 @@ class VacancyDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 class FeedbackListCreateAPIView(generics.ListCreateAPIView):
     """Feedback List Create. Recruiter can GET feedback list of vacancy. Candidate can POST feedback.
-    After creating feedback, is created ChatRoom and ChatMessage."""
+    After creating feedback, is created ChatRoom and ChatMessage. Pagination page size is 10."""
 
     serializer_class = FeedbackSerializer
     lookup_field = "slug"
+    pagination_class = pagination.MinimumResultsSetPagination
 
     def get_queryset(self):
         queryset = (

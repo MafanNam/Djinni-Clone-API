@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "django_celery_results",
     "django_celery_beat",
     "django_cleanup",
+    "django_filters",
     "django_countries",
     "djcelery_email",
     "djoser",

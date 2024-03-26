@@ -14,6 +14,8 @@ Here we would have the update steps for 0.2 for people to follow.
 - CHANGELOG.md file.
 - ConditionalGetMiddleware in middleware for optimize response.
 - GZipMiddleware in middleware for compress response.
+- Pagination for all GET list url(uri)
+- Django-filter, custom filters for profile and vacancy.
 
 ### Changed
 
@@ -27,4 +29,5 @@ Here we would have the update steps for 0.2 for people to follow.
 ### Fixed
 
 - In RecruiterProfile model, field company add blank=True.
-- MINOR Clean Code
+- MINOR Clean Code.
+- Ordering chat model and message

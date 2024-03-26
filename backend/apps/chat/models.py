@@ -15,10 +15,10 @@ class ChatRoom(TimeStampedModel):
     feedback = models.OneToOneField(Feedback, on_delete=models.CASCADE, related_name="feedback_chatroom")
 
     class Meta:
-        ordering = ("created_at",)
         verbose_name = _("Chat Room")
         verbose_name_plural = _("Chat Rooms")
         unique_together = ("candidate", "recruiter", "feedback")
+        ordering = ["-created_at"]
 
     def __str__(self):
         return f"ChatRoom {self.room_id} from {self.candidate.first_name} from {self.recruiter.first_name}"
@@ -31,9 +31,9 @@ class ChatMessage(TimeStampedModel):
     is_read = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ("created_at",)
         verbose_name = _("Chat Message")
         verbose_name_plural = _("Chat Messages")
+        ordering = ["created_at"]
 
     def __str__(self):
         return f"{self.user.get_short_name} -> {self.message}"
