@@ -1,10 +1,8 @@
 from .base import *  # noqa
 from .base import env
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY", default="django-insecure-kdxyc)gjt4qs-sk^##l54mrxczdv_)jm%_fg$)5_5bktcmt&ia")
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG", default=True)
 
 # if DEBUG:
@@ -17,22 +15,31 @@ INSTALLED_APPS += [
     "debug_toolbar",
 ]
 
-# MIDDLEWARE += [
-#     "apps.users.middleware.JWTFromCookieMiddleware",
-# ]
+MIDDLEWARE += [
+    # TODO: Delete JWTFromCookieMiddleware
+    "apps.users.middleware.JWTFromCookieMiddleware",
+]
 
-MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware"] + MIDDLEWARE
+MIDDLEWARE = [
+    "django.middleware.gzip.GZipMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+] + MIDDLEWARE
+
+# CACHE
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+    }
+}
 
 # EMAIL
 EMAIL_BACKEND = "djcelery_email.backends.CeleryEmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
-EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = "support@medium.site"
-DOMAIN = env("DOMAIN", default="localhost:8000")
-SITE_NAME = "Djinni Clone"
+DEFAULT_FROM_EMAIL = "Djinni Clone <djinniclone@gmail.com>"
 
 # DEBUG TOOLBAR
 DEBUG_TOOLBAR_PANELS = [

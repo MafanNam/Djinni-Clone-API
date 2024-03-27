@@ -1,0 +1,62 @@
+{% load i18n %}
+
+{% block subject %}
+    {% blocktrans %}Account activation on {{ site_name }}{% endblocktrans %}
+{% endblock subject %}
+
+{% block text_body %}
+    {% blocktrans %}You're receiving this email because you need to finish activation process on {{ site_name }}.
+    {% endblocktrans %}
+
+    {% trans "Please go to the following page to activate account:" %}
+    {{ protocol }}://{{ domain }}/{{ url|safe }}
+
+    {% trans "Thanks for using our site!" %}
+
+    {% blocktrans %}The {{ site_name }} team{% endblocktrans %}
+{% endblock text_body %}
+
+{% block html_body %}
+    <head>
+        <title>Активація вашого облікового запису {{ site_name }}</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+                margin: 0;
+                padding: 20px;
+            }
+
+            h1 {
+                color: #333;
+            }
+
+            p {
+                color: #666;
+            }
+
+            a {
+                display: inline-block;
+                margin-top: 10px;
+                padding: 12px 20px;
+                background-color: #6cc0ff;
+                color: #fff;
+                text-decoration: none;
+                border-radius: 4px;
+            }
+
+            a:hover {
+                background-color: #2596f1;
+            }
+        </style>
+    </head>
+    <body>
+    <h1>Ласкаво просимо до {{ site_name }}!</h1>
+    <p>Дякуємо за реєстрацію. Щоб активувати ваш обліковий запис, будь ласка, перейдіть за посиланням нижче:</p>
+    <a href="{{ protocol }}://{{ domain }}/{{ url|safe }}">{{ protocol }}://{{ domain }}/{{ url|safe }}>Активувати
+        обліковий запис</a>
+    <p>Якщо ви не реєструвалися на {{ site_name }}, проігноруйте цей лист.</p>
+    <p>Дякуємо!</p>
+    </body>
+
+{% endblock html_body %}

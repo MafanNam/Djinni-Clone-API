@@ -1,4 +1,5 @@
 from apps.chat.models import ChatMessage, ChatRoom
+from apps.core import pagination
 from django.db.models import Q
 from rest_framework import generics, permissions
 from rest_framework.generics import get_object_or_404
@@ -7,10 +8,11 @@ from .serializers import ChatMessageSerializer, ChatRoomSerializer
 
 
 class ChatRoomListAPIView(generics.ListAPIView):
-    """Chat Room List APIView."""
+    """Chat Room List APIView. Pagination page size is 10."""
 
     serializer_class = ChatRoomSerializer
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = pagination.MinimumResultsSetPagination
 
     def get_queryset(self):
         user = self.request.user
@@ -21,10 +23,11 @@ class ChatRoomListAPIView(generics.ListAPIView):
 
 
 class ChatMessagesListCreateAPIView(generics.ListCreateAPIView):
-    """Chat Messages List Create APIView."""
+    """Chat Messages List Create APIView. Pagination page size is 20."""
 
     serializer_class = ChatMessageSerializer
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = pagination.StandardResultsSetPagination
 
     def get_queryset(self):
         user = self.request.user

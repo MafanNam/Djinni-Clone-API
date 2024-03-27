@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "django_celery_results",
     "django_celery_beat",
     "django_cleanup",
+    "django_filters",
     "django_countries",
     "djcelery_email",
     "djoser",
@@ -39,7 +40,6 @@ INSTALLED_APPS = [
     "taggit",
     "multiselectfield",
     "phonenumber_field",
-    "cachalot",
     # LOCAL_APPS
     "apps.users",
     "apps.accounts",
@@ -49,6 +49,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "django.middleware.http.ConditionalGetMiddleware",
     "social_django.middleware.SocialAuthExceptionMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -58,9 +59,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    # TODO: Delete JWTFromCookieMiddleware
-    "apps.users.middleware.JWTFromCookieMiddleware",
-    "apps.users.middleware.OnlineStatusMiddleware",
+    # "apps.users.middleware.OnlineStatusMiddleware",
 ]
 
 ROOT_URLCONF = "backend.urls"
@@ -68,7 +67,7 @@ ROOT_URLCONF = "backend.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -133,6 +132,9 @@ SITE_ID = 1
 
 CORS_URLS_REGEX = r"^api/.*$"
 
+DOMAIN = env("DOMAIN", default="localhost:8000")
+SITE_NAME = "Djinni Clone"
+
 # Static files (CSS, JavaScript, Images)
 
 STATIC_URL = "/static/"
@@ -173,17 +175,6 @@ CELERY_CACHE_BACKEND = env("CELERY_CACHE_BACKEND", default="django-cache")
 # CELERY BEAT SETTINGS
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
-# CACHE
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": env("REDIS_CACHE_LOCATION", default="redis://localhost:6379/1"),
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        },
-    }
-}
-
 # DOC
 SPECTACULAR_SETTINGS = {
     "TITLE": "Djinni Clone API",
@@ -222,28 +213,42 @@ SESSION_COOKIE_SECURE = True
 
 DJOSER = {
     "LOGIN_FIELD": "email",
+    "SET_USERNAME_RETYPE": True,
+    "SET_PASSWORD_RETYPE": True,
+    "SEND_ACTIVATION_EMAIL": True,
+    "SEND_CONFORMATION_EMAIL": True,
+    "LOGOUT_ON_PASSWORD_CHANGE": False,
     "USER_CREATE_PASSWORD_RETYPE": True,
     "USERNAME_CHANGED_EMAIL_CONFIRMATION": True,
     "PASSWORD_CHANGED_EMAIL_CONFIRMATION": True,
-    "SEND_CONFORMATION_EMAIL": True,
-    "SET_USERNAME_RETYPE": True,
-    "SET_PASSWORD_RETYPE": True,
     "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
     "USERNAME_RESET_CONFIRM_URL": "email/reset/confirm/{uid}/{token}",
-    "ACTIVATION_URL": "activate/{uid}/{token}",
-    "SEND_ACTIVATION_EMAIL": True,
     "SOCIAL_AUTH_TOKEN_STRATEGY": "djoser.social.token.jwt.TokenStrategy",
     "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": env.list(
-        "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS", default=["http://localhost:8000", "http://localhost:3000"]
+        "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS",
+        default=[
+            "http://localhost:8000",
+            "http://localhost:3000",
+        ],
     ),
+    "ACTIVATION_URL": "activate/{uid}/{token}",
     "SERIALIZERS": {
         "user_create_password_retype": "apps.users.api.serializers.CustomUserCreatePasswordRetypeSerializer",
         "user": "apps.users.api.serializers.CustomUserSerializer",
         "current_user": "apps.users.api.serializers.CustomUserSerializer",
         "user_delete": "djoser.serializers.UserDeleteSerializer",
     },
+    "EMAIL": {
+        "activation": "apps.users.email.ActivationEmail",
+        "confirmation": "apps.users.email.ConfirmationEmail",
+        "password_reset": "apps.users.email.PasswordResetEmail",
+        "password_changed_confirmation": "apps.users.email.PasswordChangedConfirmationEmail",
+        "username_changed_confirmation": "apps.users.email.UsernameChangedConfirmationEmail",
+        "username_reset": "apps.users.email.UsernameResetEmail",
+    },
     "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True,
     "USERNAME_RESET_SHOW_EMAIL_NOT_FOUND": True,
+    "TOKEN_MODEL": None,
 }
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY", default="")

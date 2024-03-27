@@ -1,18 +1,29 @@
 from apps.accounts.api.permissions import CandidateRequiredPermission, RecruiterRequiredPermission
+from apps.core import filters, pagination
 from apps.vacancy.api.serializers import FeedbackSerializer, VacancySerializer
 from apps.vacancy.models import Feedback, Vacancy, VacancyView
-from django.http import Http404
-from rest_framework import generics, permissions, serializers, status
+from django_filters import rest_framework as dj_filters
+from rest_framework import generics, permissions, serializers
 from rest_framework.exceptions import ValidationError
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 
 class VacancyListCreateAPIView(generics.ListCreateAPIView):
-    """Vacancy List Create. Only recruiters can create new vacancies."""
+    """Vacancy List Create. Only recruiters can create new vacancies. Pagination page size is 15."""
 
-    queryset = Vacancy.objects.all()
+    queryset = (
+        Vacancy.objects.select_related("user", "company", "category", "user__recruiter_profile")
+        .prefetch_related("skills", "vacancy_views", "feedback_vacancy")
+        .all()
+    )
     serializer_class = VacancySerializer
+    pagination_class = pagination.MediumResultsSetPagination
+    filter_backends = [dj_filters.DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_class = filters.VacancyFilter
+    search_fields = ["company_name", "title", "category_name"]
+    ordering_fields = ["created_at", "salary"]
 
     def perform_create(self, serializer):
         user = self.request.user
@@ -33,7 +44,7 @@ class VacancyListCreateAPIView(generics.ListCreateAPIView):
 class VacancyDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     """Vacancy Detail API. Only recruiters can update and delete vacancies."""
 
-    queryset = Vacancy.objects.all()
+    queryset = Vacancy.objects.select_related("user", "company", "category").all()
     lookup_field = "slug"
     serializer_class = VacancySerializer
 
@@ -45,29 +56,34 @@ class VacancyDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
         return super().get_permissions()
 
     def retrieve(self, request, *args, **kwargs):
-        try:
-            instance = self.get_object()
-        except Http404:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        user = request.user
 
-        if request.user.is_authenticated and request.user.has_candidate_profile():
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+
+        if user.is_authenticated and user.has_candidate_profile():
             viewer_ip = request.META.get("REMOTE_ADDR", None)
-            # TODO: change when using only Docker
-            VacancyView.record_view(vacancy=instance, user=request.user, viewer_ip=viewer_ip)
-            # create_vacancy_view.delay(instance.id, request.user.id, viewer_ip)
+            # TODO: change when using only Docker and Celery Maybe
+            VacancyView.record_view(vacancy=instance, user=user, viewer_ip=viewer_ip)
+            # create_vacancy_view.delay(instance.id, user.id, viewer_ip)
 
-        return super().retrieve(request, *args, **kwargs)
+        return Response(serializer.data)
 
 
 class FeedbackListCreateAPIView(generics.ListCreateAPIView):
     """Feedback List Create. Recruiter can GET feedback list of vacancy. Candidate can POST feedback.
-    After creating feedback, is created ChatRoom and ChatMessage."""
+    After creating feedback, is created ChatRoom and ChatMessage. Pagination page size is 10."""
 
     serializer_class = FeedbackSerializer
     lookup_field = "slug"
+    pagination_class = pagination.MinimumResultsSetPagination
 
     def get_queryset(self):
-        queryset = Feedback.objects.filter(vacancy__slug=self.kwargs["slug"])
+        queryset = (
+            Feedback.objects.select_related("user", "user__candidate_profile", "vacancy", "vacancy__company")
+            .prefetch_related("contact_cv", "user__candidate_profile__skills", "user__candidate_profile__category")
+            .filter(vacancy__slug=self.kwargs["slug"])
+        )
         return queryset
 
     def perform_create(self, serializer):

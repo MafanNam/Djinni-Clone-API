@@ -1,6 +1,7 @@
 from apps.other.models import Category, Company
 from django_countries.serializer_fields import CountryField
 from rest_framework import serializers
+from taggit.models import Tag
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -32,3 +33,9 @@ class CompanySerializer(serializers.ModelSerializer):
             "country",
             "num_employees",
         ]
+
+
+class SkillsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ["name"]

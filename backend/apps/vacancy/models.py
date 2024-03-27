@@ -35,6 +35,7 @@ class Vacancy(TimeStampedModel):
     class Meta:
         verbose_name = _("Vacancy")
         verbose_name_plural = _("Vacancies")
+        ordering = ["-created_at"]
 
     def __str__(self):
         return self.title

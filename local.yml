@@ -2,6 +2,19 @@ version: '3.11'
 
 
 services:
+    nginx:
+        restart: always
+        image: nginx:1.25-alpine
+        ports:
+            - "8080:80"
+        volumes:
+            - ./docker/local/nginx/default.conf:/etc/nginx/conf.d/default.conf
+            - static_volume:/app/backend/staticfiles
+            - media_volume:/app/backend/mediafiles
+        depends_on:
+            -   server
+        networks:
+            - djinni-clone-api
     server:
         restart: unless-stopped
         build:
@@ -11,12 +24,14 @@ services:
         volumes:
             - static_volume:/app/backend/staticfiles
             - media_volume:/app/backend/mediafiles
-#        expose:
-#            - "8000:8000"
-        ports:
-          - "8000:8000"
+        expose:
+            - "8000"
+#        ports:
+#          - "8000:8000"
         env_file:
             - ./.envs/.local/django.env
+        depends_on:
+            - redis
         networks:
             - djinni-clone-api
     worker:
@@ -30,7 +45,6 @@ services:
         env_file:
             - ./.envs/.local/django.env
         depends_on:
-            - server
             - redis
         networks:
             - djinni-clone-api
@@ -45,7 +59,6 @@ services:
         env_file:
             - ./.envs/.local/django.env
         depends_on:
-            - server
             - redis
             - worker
         networks:

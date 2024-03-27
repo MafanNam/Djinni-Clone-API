@@ -3,6 +3,7 @@ django-environ==0.11.2
 django-autoslug==1.9.9
 django-cachalot==2.6.2
 django-countries==7.5.1
+django-filter==24.1
 django-taggit==5.0.1
 django-cleanup==8.1.0
 django-multiselectfield==0.1.12

@@ -6,9 +6,8 @@ from apps.accounts.api.serializers import (
 from apps.accounts.models import EMPLOY_OPTIONS
 from apps.core.serializers import CustomMultipleChoiceField
 from apps.other.api.serializers import ShortCompanySerializer
-from apps.vacancy.models import Feedback, Vacancy, VacancyView
+from apps.vacancy.models import Feedback, Vacancy
 from django_countries.serializer_fields import CountryField
-from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 from taggit.serializers import TaggitSerializer, TagListSerializerField
@@ -22,8 +21,8 @@ class VacancySerializer(TaggitSerializer, serializers.HyperlinkedModelSerializer
     country = CountryField(name_only=True)
     company = ShortCompanySerializer(read_only=True, many=False)
     recruiter = serializers.SerializerMethodField()
-    views = serializers.SerializerMethodField()
-    feedback = serializers.SerializerMethodField()
+    views = serializers.IntegerField(source="vacancy_views.count", read_only=True)
+    feedback = serializers.IntegerField(source="feedback_vacancy.count", read_only=True)
 
     class Meta:
         model = Vacancy
@@ -47,10 +46,11 @@ class VacancySerializer(TaggitSerializer, serializers.HyperlinkedModelSerializer
             "created_at",
             "updated_at",
         )
+        depth = 1
 
-    @extend_schema_field(OpenApiTypes.INT)
-    def get_views(self, obj):
-        return VacancyView.objects.filter(vacancy=obj).count()
+    # @extend_schema_field(OpenApiTypes.INT)
+    # def get_views(self, obj):
+    #     return VacancyView.objects.filter(vacancy=obj).count()
 
     @extend_schema_field(ShortRecruiterProfileSerializer)
     def get_recruiter(self, obj):
@@ -58,9 +58,9 @@ class VacancySerializer(TaggitSerializer, serializers.HyperlinkedModelSerializer
             obj.user.recruiter_profile, context={"request": self.context["request"]}, many=False
         ).data
 
-    @extend_schema_field(OpenApiTypes.INT)
-    def get_feedback(self, obj):
-        return Feedback.objects.filter(vacancy=obj).count()
+    # @extend_schema_field(OpenApiTypes.INT)
+    # def get_feedback(self, obj):
+    #     return Feedback.objects.filter(vacancy=obj).count()
 
 
 class ShortVacancySerializer(VacancySerializer):
