@@ -20,6 +20,9 @@ Here we would have the update steps for 0.2 for people to follow.
 - Ordering in vacancy and by trust_hr
 - Default model image for Profile, Company
 - Fixtures for user
+- Nginx container and config
+- Celery beat schedule task spam-mail-every-week
+- Subscribe to spam email url, view
 
 ### Changed
 
@@ -29,9 +32,12 @@ Here we would have the update steps for 0.2 for people to follow.
   Queryset too.
 - VacancyDetailAPIView optimize retrieve(GET detail) and queryset.
 - FeedbackListCreateAPIView optimize queryset.
+- Activation email template
 
 ### Fixed
 
 - In RecruiterProfile model, field company add blank=True.
 - MINOR Clean Code.
 - Ordering chat model and message
+- Improve Dockerfile
+- CustomTokenObtainPairView bug and refactor

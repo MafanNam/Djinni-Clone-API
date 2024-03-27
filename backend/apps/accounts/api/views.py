@@ -74,7 +74,11 @@ class RecruiterProfileDetailAPIView(generics.RetrieveAPIView):
 
 
 class RecruiterProfileUserAPIView(generics.RetrieveUpdateAPIView):
-    """Detail Update Recruiter Profile. Only recruiter can edit profile."""
+    """
+    API view for retrieving and updating the recruiter profile.
+
+    This class allows authenticated recruiters to view and edit their profile.
+    """
 
     permission_classes = [RecruiterRequiredPermission]
 
