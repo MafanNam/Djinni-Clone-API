@@ -65,7 +65,9 @@ db.sqlite3
 db.sqlite3-journal
 media/
 media_files/
-mediafiles/
+backend/mediafiles/*
+!backend/mediafiles/default/
+
 static/
 static-files/
 staticfiles/
@@ -134,7 +136,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# pytype static type analyzer
+# pytype default type analyzer
 .pytype/
 
 # Cython debug symbols

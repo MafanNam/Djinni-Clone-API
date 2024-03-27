@@ -11,7 +11,12 @@ User = get_user_model()
 class Company(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="companies")
     name = models.CharField(max_length=200)
-    image = models.ImageField(upload_to=get_path_upload_image_company, validators=[validate_image_size])
+    image = models.ImageField(
+        upload_to=get_path_upload_image_company,
+        validators=[validate_image_size],
+        blank=True,
+        default="default/company.png",
+    )
     bio = models.TextField()
     company_url = models.URLField(blank=True)
     dou_url = models.URLField(blank=True)

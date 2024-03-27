@@ -5,6 +5,7 @@ from apps.vacancy.models import Feedback, Vacancy, VacancyView
 from django_filters import rest_framework as dj_filters
 from rest_framework import generics, permissions, serializers
 from rest_framework.exceptions import ValidationError
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
@@ -19,8 +20,10 @@ class VacancyListCreateAPIView(generics.ListCreateAPIView):
     )
     serializer_class = VacancySerializer
     pagination_class = pagination.MediumResultsSetPagination
-    filter_backends = [dj_filters.DjangoFilterBackend]
+    filter_backends = [dj_filters.DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = filters.VacancyFilter
+    search_fields = ["company_name", "title", "category_name"]
+    ordering_fields = ["created_at", "salary"]
 
     def perform_create(self, serializer):
         user = self.request.user

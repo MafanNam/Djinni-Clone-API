@@ -34,6 +34,7 @@ class VacancyFilter(django_filters.FilterSet):
         fields = {
             "company__id": ["exact"],
             "category__id": ["exact"],
+            "user__recruiter_profile__trust_hr": ["exact"],
             "skills__name": ["exact"],
             "eng_level": ["exact"],
             "country": ["exact"],

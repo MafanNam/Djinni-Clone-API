@@ -59,7 +59,12 @@ class CandidateProfile(TimeStampedModel):
         validators=[MinLengthValidator(200), MaxLengthValidator(1000)], blank=True, null=True
     )
     employ_options = MultiSelectField(choices=EMPLOY_OPTIONS, max_length=50, blank=True)
-    image = models.ImageField(upload_to=get_path_upload_image_candidate, validators=[validate_image_size])
+    image = models.ImageField(
+        upload_to=get_path_upload_image_candidate,
+        validators=[validate_image_size],
+        blank=True,
+        default="default/profile.jpg",
+    )
     find_job = models.CharField(choices=FIND_JOB, default=FIND_JOB.passive, max_length=50)
 
     class Meta:
@@ -82,7 +87,12 @@ class RecruiterProfile(TimeStampedModel):
     company = models.ForeignKey(
         Company, on_delete=models.SET_NULL, null=True, blank=True, related_name="recruiter_profile"
     )
-    image = models.ImageField(upload_to=get_path_upload_image_recruiter, validators=[validate_image_size])
+    image = models.ImageField(
+        upload_to=get_path_upload_image_recruiter,
+        validators=[validate_image_size],
+        blank=True,
+        default="default/profile.jpg",
+    )
     trust_hr = models.BooleanField(default=False)
 
     class Meta:

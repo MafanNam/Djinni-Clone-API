@@ -16,6 +16,10 @@ Here we would have the update steps for 0.2 for people to follow.
 - GZipMiddleware in middleware for compress response.
 - Pagination for all GET list url(uri)
 - Django-filter, custom filters for profile and vacancy.
+- Search in vacancy
+- Ordering in vacancy and by trust_hr
+- Default model image for Profile, Company
+- Fixtures for user
 
 ### Changed
 

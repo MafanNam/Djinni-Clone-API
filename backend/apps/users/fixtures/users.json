@@ -1,0 +1,56 @@
+[
+  {
+    "model": "users.user",
+    "pk": 1,
+    "fields": {
+      "password": "argon2$argon2id$v=19$m=102400,t=2,p=8$NkVpY1JFWXBFNHZRbDRHcTRGdGJJTA$9Xix8ue/XREtyPzgtGgxpeRHI+gAt7O3JxMe1SrN0Cw",
+      "last_login": "2024-03-27T11:53:34.973Z",
+      "is_superuser": true,
+      "first_name": "Admin",
+      "last_name": "Admin",
+      "email": "admin@gmail.com",
+      "type_profile": "candidate",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2024-03-26T21:34:24.066Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 2,
+    "fields": {
+      "password": "argon2$argon2id$v=19$m=102400,t=2,p=8$em9BOTR6eXpuN24wSGhtdkZKZ2NNQw$iEXh41IV6sLjdnifQqgCEuNqjCIRGJwgSLEuION0vg0",
+      "last_login": null,
+      "is_superuser": false,
+      "first_name": "Djon",
+      "last_name": "Doe",
+      "email": "recruit1@gmail.com",
+      "type_profile": "recruiter",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2024-03-27T12:48:38.010Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 3,
+    "fields": {
+      "password": "argon2$argon2id$v=19$m=102400,t=2,p=8$Tk5hb0J5MHlHTHlwV1JBbjNTZHhFVQ$A7YrwyJReOSF8FLPv+Qs1eJfs6Hp8doQhpqZKdcZusY",
+      "last_login": null,
+      "is_superuser": false,
+      "first_name": "Vital",
+      "last_name": "Cormande",
+      "email": "candidate1@gmail.com",
+      "type_profile": "candidate",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2024-03-27T12:48:56.802Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  }
+]
