@@ -12,7 +12,7 @@ APP_DIR = BASE_DIR / "apps"
 
 DEBUG = env("DEBUG", default=False)
 
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
 
 # Application definition
 
@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "django_filters",
     "django_countries",
     "djcelery_email",
+    "cachalot",
     "djoser",
     "social_django",
     "corsheaders",
@@ -53,7 +54,6 @@ MIDDLEWARE = [
     "social_django.middleware.SocialAuthExceptionMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -89,7 +89,7 @@ WSGI_APPLICATION = "backend.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3new",
     }
 }
 
@@ -130,7 +130,21 @@ USE_TZ = True
 
 SITE_ID = 1
 
-CORS_URLS_REGEX = r"^api/.*$"
+# CORS
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:8080",
+#     "http://127.0.0.1:8080",
+#     "http://localhost:3000",
+#     "http://127.0.0.1:3000",
+# ]
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+#     # "http://localhost:8000",
+#     # "http://localhost:8080",
+# ]
+
 
 DOMAIN = env("DOMAIN", default="localhost:8000")
 SITE_NAME = "Djinni Clone"
@@ -186,7 +200,7 @@ SPECTACULAR_SETTINGS = {
 }
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_simplejwt.authentication.JWTAuthentication",),
+    "DEFAULT_AUTHENTICATION_CLASSES": ("apps.users.authentication.CustomJWTAuthentication",),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
@@ -205,8 +219,16 @@ SIMPLE_JWT = {
     "USER_ID_FIELD": "id",
     "USER_ID_CLAIM": "user_id",
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
-    "AUTH_COOKIE": "access_token",
+    # Custom
+    "AUTH_COOKIE": "access",
+    "AUTH_COOKIE_ACCESS_MAX_AGE": 60 * 5,
+    "AUTH_COOKIE_REFRESH_MAX_AGE": 60 * 60 * 24,
+    "AUTH_COOKIE_SECURE": env.bool("AUTH_COOKIE_SECURE", default=True),
+    "AUTH_COOKIE_HTTP_ONLY": True,
+    "AUTH_COOKIE_PATH": "/",
+    "AUTH_COOKIE_SAMESITE": "None",
 }
+
 
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
@@ -259,3 +281,20 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     "openid",
 ]
 SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ["first_name", "last_name"]
+
+# CACHE
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+#     }
+# }
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": env("REDIS_CACHE_LOCATION", default="redis://localhost:6379/1"),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}

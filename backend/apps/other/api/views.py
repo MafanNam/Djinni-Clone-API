@@ -11,7 +11,7 @@ from .serializers import CategorySerializer, CompanySerializer, SkillsSerializer
 class CategoryListAPIView(generics.ListAPIView):
     """List all categories. Pagination page size is 50."""
 
-    queryset = Category.objects.all()
+    queryset = Category.objects.all().order_by("id")
     serializer_class = CategorySerializer
     permission_classes = [permissions.AllowAny]
     pagination_class = pagination.LargeResultsSetPagination
@@ -20,7 +20,7 @@ class CategoryListAPIView(generics.ListAPIView):
 class CompanyListCreateAPIView(generics.ListCreateAPIView):
     """List all companies, or create a new company. Pagination page size is 20."""
 
-    queryset = Company.objects.all()
+    queryset = Company.objects.all().order_by("id")
     serializer_class = CompanySerializer
     pagination_class = pagination.StandardResultsSetPagination
 

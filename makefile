@@ -35,6 +35,12 @@ makemigrations:
 migrate:
 	cd backend & python manage.py migrate
 
+dumpdata:
+	cd backend & python -Xutf8 ./manage.py dumpdata --exclude=auth --exclude=contenttypes --exclude=sessions -o mydata.json
+
+loaddata:
+	cd backend & python -Xutf8 ./manage.py loaddata mydata.json
+
 down-v:
 	docker compose -f local.yml down -v
 

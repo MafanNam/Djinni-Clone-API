@@ -12,7 +12,7 @@ User = get_user_model()
 def create_user_profile(sender, instance, created, **kwargs):
     """Create a user profile when a new user is created."""
     if not instance.is_superuser:
-        if created:
+        if created and not kwargs.get("raw", False):
             if instance.type_profile == TYPE_PROFILE_CHOICES.candidate:
                 CandidateProfile.objects.create(
                     user=instance, first_name=instance.first_name, last_name=instance.last_name
@@ -29,8 +29,9 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     """Save the user profile when the user is saved."""
-    if not instance.is_superuser:
+    if not instance.is_superuser and not kwargs.get("raw", False):
         if instance.type_profile == TYPE_PROFILE_CHOICES.candidate:
             instance.candidate_profile.save()
+            instance.contact_cv.save()
         elif instance.type_profile == TYPE_PROFILE_CHOICES.recruiter:
             instance.recruiter_profile.save()

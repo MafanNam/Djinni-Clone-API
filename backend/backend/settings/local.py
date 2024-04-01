@@ -9,7 +9,14 @@ DEBUG = env("DEBUG", default=True)
 #     # `debug` is only True in templates if the vistor IP is in INTERNAL_IPS.
 #     INTERNAL_IPS = type("c", (), {"__contains__": lambda *a: True})()
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:8080"]
+CSRF_TRUSTED_ORIGINS = env.list(
+    "CSRF_TRUSTED_ORIGINS",
+    default=[
+        "http://localhost:8080",
+        "http://localhost:8000",
+        "http://localhost:3000",
+    ],
+)
 
 INSTALLED_APPS += [
     "debug_toolbar",
@@ -17,6 +24,7 @@ INSTALLED_APPS += [
 
 MIDDLEWARE += [
     # TODO: Delete JWTFromCookieMiddleware
+    "corsheaders.middleware.CorsMiddleware",
     "apps.users.middleware.JWTFromCookieMiddleware",
 ]
 
@@ -25,12 +33,6 @@ MIDDLEWARE = [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ] + MIDDLEWARE
 
-# CACHE
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
-    }
-}
 
 # EMAIL
 EMAIL_BACKEND = "djcelery_email.backends.CeleryEmailBackend"
