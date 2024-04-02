@@ -3,8 +3,27 @@ from djoser.serializers import UserCreatePasswordRetypeSerializer, UserSerialize
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 User = get_user_model()
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        token["user"] = CustomUserSerializer(user).data
+
+        return token
+
+    # def validate(self, attrs):
+    #     data = super().validate(attrs)
+    #
+    #     data.update({
+    #         'user': CustomUserSerializer(self.user).data
+    #     })
+    #     return data
 
 
 class CustomUserCreatePasswordRetypeSerializer(UserCreatePasswordRetypeSerializer):

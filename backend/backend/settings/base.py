@@ -221,12 +221,12 @@ SIMPLE_JWT = {
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
     # Custom
     "AUTH_COOKIE": "access",
-    "AUTH_COOKIE_ACCESS_MAX_AGE": 60 * 5,
-    "AUTH_COOKIE_REFRESH_MAX_AGE": 60 * 60 * 24,
-    "AUTH_COOKIE_SECURE": env.bool("AUTH_COOKIE_SECURE", default=True),
+    "AUTH_COOKIE_ACCESS_MAX_AGE": 60,
+    "AUTH_COOKIE_REFRESH_MAX_AGE": 60 * 60 * 24 * 7,
+    "AUTH_COOKIE_SECURE": env.bool("AUTH_COOKIE_SECURE", default=False),
     "AUTH_COOKIE_HTTP_ONLY": True,
     "AUTH_COOKIE_PATH": "/",
-    "AUTH_COOKIE_SAMESITE": "None",
+    "AUTH_COOKIE_SAMESITE": "Lax",
 }
 
 

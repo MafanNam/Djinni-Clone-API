@@ -11,5 +11,6 @@ urlpatterns = [
     path("auth/jwt/verify/", views.CustomTokenVerifyView.as_view(), name="jwt-verify"),
     path("auth/logout/", views.LogoutView.as_view(), name="logout"),
     path("auth/", include("djoser.social.urls")),
+    # path("auth/", include("djoser.urls.jwt")),
     path("auth/users/spam-email-every-week/", views.SpamEmailEveryWeek.as_view(), name="spam_email_every_week"),
 ]

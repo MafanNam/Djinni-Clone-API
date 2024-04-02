@@ -6,10 +6,13 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
+from .serializers import CustomTokenObtainPairSerializer
+
 User = get_user_model()
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
 
     def post(self, request: Request, *args, **kwargs) -> Response:
         response = super().post(request, *args, **kwargs)
@@ -72,11 +75,22 @@ class CustomTokenRefreshView(TokenRefreshView):
 
         if response.status_code == 200:
             access_token = response.data.get("access")
+            refresh_token = response.data.get("refresh")
 
             response.set_cookie(
                 "access",
                 access_token,
                 max_age=settings.SIMPLE_JWT["AUTH_COOKIE_ACCESS_MAX_AGE"],
+                path=settings.SIMPLE_JWT["AUTH_COOKIE_PATH"],
+                secure=settings.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
+                httponly=settings.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"],
+                samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"],
+            )
+
+            response.set_cookie(
+                "refresh",
+                refresh_token,
+                max_age=settings.SIMPLE_JWT["AUTH_COOKIE_REFRESH_MAX_AGE"],
                 path=settings.SIMPLE_JWT["AUTH_COOKIE_PATH"],
                 secure=settings.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
                 httponly=settings.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"],
