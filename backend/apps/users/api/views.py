@@ -1,18 +1,53 @@
 from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model
+from djoser.social.views import ProviderAuthView
 from rest_framework import permissions, status, views
 from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
-from .serializers import CustomTokenObtainPairSerializer
-
 User = get_user_model()
 
 
+def set_cookie(response, access_token=None, refresh_token=None):
+    if access_token:
+        response.set_cookie(
+            "access",
+            access_token,
+            max_age=settings.SIMPLE_JWT["AUTH_COOKIE_MAX_AGE"],
+            path=settings.SIMPLE_JWT["AUTH_COOKIE_PATH"],
+            secure=settings.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
+            httponly=settings.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"],
+            samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"],
+        )
+    if refresh_token:
+        response.set_cookie(
+            "refresh",
+            refresh_token,
+            max_age=settings.SIMPLE_JWT["AUTH_COOKIE_MAX_AGE"],
+            path=settings.SIMPLE_JWT["AUTH_COOKIE_PATH"],
+            secure=settings.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
+            httponly=settings.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"],
+            samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"],
+        )
+
+
+class CustomProviderAuthView(ProviderAuthView):
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+
+        if response.status_code == 201:
+            access_token = response.data.get("access")
+            refresh_token = response.data.get("refresh")
+
+            set_cookie(response, access_token, refresh_token)
+
+        return response
+
+
 class CustomTokenObtainPairView(TokenObtainPairView):
-    serializer_class = CustomTokenObtainPairSerializer
 
     def post(self, request: Request, *args, **kwargs) -> Response:
         response = super().post(request, *args, **kwargs)
@@ -31,34 +66,13 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
             return Response({"msg": "user password wrong."}, status=status.HTTP_401_UNAUTHORIZED)
 
-        # TODO: Change when deploy. Off setCookie
-        # response.set_cookie("access_token", serializer.validated_data["access"])
-
         if response.status_code == 200:
             access_token = response.data.get("access")
             refresh_token = response.data.get("refresh")
 
-            response.set_cookie(
-                "access",
-                access_token,
-                max_age=settings.SIMPLE_JWT["AUTH_COOKIE_ACCESS_MAX_AGE"],
-                path=settings.SIMPLE_JWT["AUTH_COOKIE_PATH"],
-                secure=settings.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
-                httponly=settings.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"],
-                samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"],
-            )
-            response.set_cookie(
-                "refresh",
-                refresh_token,
-                max_age=settings.SIMPLE_JWT["AUTH_COOKIE_REFRESH_MAX_AGE"],
-                path=settings.SIMPLE_JWT["AUTH_COOKIE_PATH"],
-                secure=settings.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
-                httponly=settings.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"],
-                samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"],
-            )
+            set_cookie(response, access_token, refresh_token)
 
         return response
-        # return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
 
 class CustomTokenRefreshView(TokenRefreshView):
@@ -69,7 +83,7 @@ class CustomTokenRefreshView(TokenRefreshView):
         if refresh_token:
             request.data["refresh"] = refresh_token
         else:
-            return Response({"msg": "refresh token not provided."}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"msg": "refresh token not provided"}, status=status.HTTP_401_UNAUTHORIZED)
 
         response = super().post(request, *args, **kwargs)
 
@@ -77,25 +91,7 @@ class CustomTokenRefreshView(TokenRefreshView):
             access_token = response.data.get("access")
             refresh_token = response.data.get("refresh")
 
-            response.set_cookie(
-                "access",
-                access_token,
-                max_age=settings.SIMPLE_JWT["AUTH_COOKIE_ACCESS_MAX_AGE"],
-                path=settings.SIMPLE_JWT["AUTH_COOKIE_PATH"],
-                secure=settings.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
-                httponly=settings.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"],
-                samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"],
-            )
-
-            response.set_cookie(
-                "refresh",
-                refresh_token,
-                max_age=settings.SIMPLE_JWT["AUTH_COOKIE_REFRESH_MAX_AGE"],
-                path=settings.SIMPLE_JWT["AUTH_COOKIE_PATH"],
-                secure=settings.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
-                httponly=settings.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"],
-                samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"],
-            )
+            set_cookie(response, access_token, refresh_token)
 
         return response
 
@@ -108,7 +104,7 @@ class CustomTokenVerifyView(TokenVerifyView):
         if access_token:
             request.data["token"] = access_token
         else:
-            return Response({"msg": "access token not provided."}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"msg": "access token not provided"}, status=status.HTTP_401_UNAUTHORIZED)
 
         return super().post(request, *args, **kwargs)
 
