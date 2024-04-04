@@ -119,6 +119,8 @@ myenv
 .envs/*
 !.envs/.local/
 .envs/.local/django.env
+.envs/.local/rabbitmq.env
+.envs/.local/postgres.env
 
 # Spyder project settings
 .spyderproject
