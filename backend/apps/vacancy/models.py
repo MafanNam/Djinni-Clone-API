@@ -18,13 +18,15 @@ class Vacancy(TimeStampedModel):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="vacancy")
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name="vacancy")
-    title = models.CharField(verbose_name=_("Title"), max_length=200)
+    title = models.CharField(_("title"), max_length=200)
     slug = AutoSlugField(populate_from="title", always_update=True, unique=True)
-    description = models.TextField(verbose_name=_("description"), max_length=1000, validators=[MinLengthValidator(200)])
+    description = models.TextField(_("description"), max_length=1000, validators=[MinLengthValidator(200)])
+    requirements = models.TextField(_("requirements"), max_length=1000, blank=True)
+    other = models.TextField(_("other"), max_length=1000, blank=True)
     eng_level = models.CharField(choices=ENG_LEVEL, max_length=50, default=ENG_LEVEL.none)
     salary = models.PositiveIntegerField(validators=[MaxValueValidator(100000)])
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name="vacancy")
-    skills = TaggableManager(verbose_name=_("Skills"), blank=True)
+    skills = TaggableManager(_("skills"), blank=True)
     work_exp = models.PositiveIntegerField(validators=[MaxValueValidator(10)], blank=True, null=True)
     employ_options = MultiSelectField(choices=EMPLOY_OPTIONS, max_length=50)
     country = models.CharField(max_length=200, null=True, choices=CountryField().choices + [("", "Select Country")])
@@ -46,7 +48,7 @@ class VacancyView(TimeStampedModel):
 
     vacancy = models.ForeignKey(Vacancy, on_delete=models.CASCADE, related_name="vacancy_views")
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="user_views")
-    viewer_ip = models.GenericIPAddressField(verbose_name=_("viewer IP"), null=True, blank=True)
+    viewer_ip = models.GenericIPAddressField(_("viewer IP"), null=True, blank=True)
 
     class Meta:
         verbose_name = _("Vacancy View")
@@ -66,7 +68,7 @@ class Feedback(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="feedback_user")
     vacancy = models.ForeignKey(Vacancy, on_delete=models.CASCADE, related_name="feedback_vacancy")
     contact_cv = models.ForeignKey(ContactCv, on_delete=models.SET_NULL, null=True, related_name="feedback_contact_cv")
-    cover_letter = models.TextField(verbose_name=_("Cover Letter"), max_length=1000, null=True, blank=True)
+    cover_letter = models.TextField(_("cover letter"), max_length=1000, null=True, blank=True)
 
     class Meta:
         verbose_name = _("Feedback")

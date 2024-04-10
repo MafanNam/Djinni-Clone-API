@@ -29,6 +29,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         choices=TYPE_PROFILE_CHOICES,
         default=TYPE_PROFILE_CHOICES.candidate,
     )
+    is_spam_email = models.BooleanField(default=False)
 
     # User permissions
     is_staff = models.BooleanField(default=False)  # For admin access

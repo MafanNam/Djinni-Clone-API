@@ -16,10 +16,11 @@ class CustomUserCreatePasswordRetypeSerializer(UserCreatePasswordRetypeSerialize
 class CustomUserSerializer(UserSerializer):
     type_profile = serializers.CharField(source="get_type_profile_display", read_only=True)
     is_online = serializers.SerializerMethodField(read_only=True)
+    image = serializers.ImageField(source="get_profile.image", read_only=True)
 
     class Meta(UserSerializer.Meta):
         model = User
-        fields = ("id", "first_name", "last_name", "type_profile", "email", "is_online")
+        fields = ("id", "first_name", "last_name", "type_profile", "email", "image", "is_online", "is_spam_email")
         read_only_fields = ("email", "type_profile")
 
     @extend_schema_field(OpenApiTypes.BOOL)

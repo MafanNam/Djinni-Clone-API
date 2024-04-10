@@ -1,4 +1,4 @@
-version: '3.11'
+version: '3.9'
 
 
 services:
@@ -32,6 +32,25 @@ services:
             - ./.envs/.local/django.env
         depends_on:
             - redis
+            - rabbitmq
+        networks:
+            - djinni-clone-api
+    redis:
+        restart: unless-stopped
+        image: redis:7.0.5-alpine
+        expose:
+            - "6379"
+        networks:
+            - djinni-clone-api
+    rabbitmq:
+        restart: unless-stopped
+        image: rabbitmq:3.13-management-alpine
+        expose:
+            - "5672:5672"
+        ports:
+            - "15672:15672"
+        env_file:
+            - ./.envs/.local/rabbitmq.env
         networks:
             - djinni-clone-api
     worker:
@@ -45,7 +64,7 @@ services:
         env_file:
             - ./.envs/.local/django.env
         depends_on:
-            - redis
+            - rabbitmq
         networks:
             - djinni-clone-api
     celery-beat:
@@ -59,7 +78,7 @@ services:
         env_file:
             - ./.envs/.local/django.env
         depends_on:
-            - redis
+            - rabbitmq
             - worker
         networks:
             - djinni-clone-api
@@ -74,17 +93,16 @@ services:
         volumes:
             - flower_data:/data
         depends_on:
+            - server
             - worker
-            - redis
+            - rabbitmq
         networks:
             - djinni-clone-api
-    redis:
-        restart: unless-stopped
-        image: redis:7.0.5-alpine
-        expose:
-            - "6379"
-        networks:
-            - djinni-clone-api
+        healthcheck:
+          test: [ "CMD", "curl", "-f", "http://0.0.0.0:5555" ]
+          interval: 30s
+          timeout: 10s
+          retries: 5
 
 networks:
   djinni-clone-api:
