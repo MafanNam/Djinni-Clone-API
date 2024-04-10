@@ -18,6 +18,15 @@ CSRF_TRUSTED_ORIGINS = env.list(
     ],
 )
 
+CORS_ALLOW_METHODS = (
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+)
+
 INSTALLED_APPS += [
     "debug_toolbar",
 ]
@@ -32,7 +41,6 @@ MIDDLEWARE = [
     "django.middleware.gzip.GZipMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ] + MIDDLEWARE
-
 
 # EMAIL
 EMAIL_BACKEND = "djcelery_email.backends.CeleryEmailBackend"

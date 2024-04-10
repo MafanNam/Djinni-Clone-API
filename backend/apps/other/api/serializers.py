@@ -18,9 +18,7 @@ class ShortCompanySerializer(serializers.ModelSerializer):
         fields = ["id", "name", "image", "country"]
 
 
-class CompanySerializer(serializers.ModelSerializer):
-    country = CountryField(name_only=True)
-
+class CompanyUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
         fields = [
@@ -32,10 +30,17 @@ class CompanySerializer(serializers.ModelSerializer):
             "dou_url",
             "country",
             "num_employees",
+            "created_at",
         ]
 
 
+class CompanySerializer(CompanyUpdateSerializer):
+    country = CountryField(name_only=True)
+
+
 class SkillsSerializer(serializers.ModelSerializer):
+    text = serializers.CharField(source="name")
+
     class Meta:
         model = Tag
-        fields = ["name"]
+        fields = ["id", "text"]

@@ -19,6 +19,7 @@ def set_cookie(response, access_token=None, refresh_token=None):
             path=settings.SIMPLE_JWT["AUTH_COOKIE_PATH"],
             secure=settings.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
             httponly=settings.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"],
+            # httponly=False,
             samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"],
         )
     if refresh_token:

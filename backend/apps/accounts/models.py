@@ -48,15 +48,17 @@ class CandidateProfile(TimeStampedModel):
     first_name = models.CharField(max_length=50, blank=True)
     last_name = models.CharField(max_length=50, blank=True)
     position = models.CharField(max_length=50, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name="candidate_profile")
+    category = models.ForeignKey(
+        Category, on_delete=models.SET_NULL, null=True, default="", related_name="candidate_profile"
+    )
     skills = TaggableManager(verbose_name=_("Skills"), blank=True)
-    work_exp = models.PositiveIntegerField(validators=[MaxValueValidator(10)], blank=True, null=True)
-    salary_expectation = models.PositiveIntegerField(validators=[MaxValueValidator(100000)], blank=True, null=True)
-    country = models.CharField(max_length=200, null=True, choices=CountryField().choices + [("", "Select Country")])
+    work_exp = models.PositiveIntegerField(validators=[MaxValueValidator(10)], blank=True, default=0)
+    salary_expectation = models.PositiveIntegerField(validators=[MaxValueValidator(100000)], blank=True, default=0)
+    country = models.CharField(max_length=200, default="UA", choices=CountryField().choices + [("", "Select Country")])
     city = models.CharField(max_length=50, blank=True)
     eng_level = models.CharField(choices=ENG_LEVEL, max_length=50, default=ENG_LEVEL.none)
     work_exp_bio = models.TextField(
-        validators=[MinLengthValidator(200), MaxLengthValidator(1000)], blank=True, null=True
+        validators=[MinLengthValidator(200), MaxLengthValidator(1000)], blank=True, default=""
     )
     employ_options = MultiSelectField(choices=EMPLOY_OPTIONS, max_length=50, blank=True)
     image = models.ImageField(
@@ -112,17 +114,16 @@ class ContactCv(TimeStampedModel):
     last_name = models.CharField(max_length=50)
     email = models.EmailField(verbose_name=_("Email"), unique=True, max_length=254)
     phone_number = PhoneNumberField(verbose_name=_("phone number"), max_length=30, blank=True)
-    telegram_url = models.URLField(verbose_name=_("telegram url"), max_length=200, blank=True, null=True)
-    linkedin_url = models.URLField(verbose_name=_("linkedin url"), max_length=200, blank=True, null=True)
-    git_hub_url = models.URLField(verbose_name=_("git hub url"), max_length=200, blank=True, null=True)
-    portfolio_url = models.URLField(verbose_name=_("portfolio url"), max_length=200, blank=True, null=True)
+    telegram_url = models.URLField(verbose_name=_("telegram url"), max_length=200, blank=True)
+    linkedin_url = models.URLField(verbose_name=_("linkedin url"), max_length=200, blank=True)
+    git_hub_url = models.URLField(verbose_name=_("git hub url"), max_length=200, blank=True)
+    portfolio_url = models.URLField(verbose_name=_("portfolio url"), max_length=200, blank=True)
     cv_file = models.FileField(
         upload_to=get_path_upload_cv_file_contact_cv,
         validators=[
             FileExtensionValidator(["pdf"]),
             validate_file_size,
         ],
-        null=True,
         blank=True,
         verbose_name=_("CV File"),
     )

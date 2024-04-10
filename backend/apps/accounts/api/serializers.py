@@ -12,9 +12,10 @@ class CandidateProfileSerializer(TaggitSerializer, serializers.HyperlinkedModelS
     employ_options = CustomMultipleChoiceField(choices=EMPLOY_OPTIONS)
     skills = TagListSerializerField()
     category = serializers.CharField(source="category.name", read_only=True)
-    find_job = serializers.CharField(source="get_find_job_display", read_only=True)
-    eng_level = serializers.CharField(source="get_eng_level_display", read_only=True)
-    country = CountryField(name_only=True)
+
+    # find_job = serializers.CharField(source="get_find_job_display", read_only=True)
+    # eng_level = serializers.CharField(source="get_eng_level_display", read_only=True)
+    # country = CountryField(name_only=True)
 
     class Meta:
         model = CandidateProfile
@@ -66,6 +67,12 @@ class UpdateCandidateProfileSerializer(TaggitSerializer, serializers.Hyperlinked
         )
 
 
+class UpdateCandidateProfileImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CandidateProfile
+        fields = ("image",)
+
+
 class ShortCandidateProfileSerializer(serializers.HyperlinkedModelSerializer):
     country = CountryField(name_only=True)
 
@@ -82,7 +89,7 @@ class ShortCandidateProfileSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class RecruiterProfileSerializer(serializers.ModelSerializer):
-    country = CountryField(name_only=True)
+    # country = CountryField(name_only=True)
     trust_hr = serializers.BooleanField(read_only=True)
     company = ShortCompanySerializer(read_only=True)
 
@@ -100,6 +107,12 @@ class RecruiterProfileSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         )
+
+
+class UpdateRecruiterProfileImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RecruiterProfile
+        fields = ("image",)
 
 
 class ShortRecruiterProfileSerializer(serializers.HyperlinkedModelSerializer):
@@ -138,4 +151,6 @@ class ContactCvSerializer(serializers.ModelSerializer):
             "git_hub_url",
             "portfolio_url",
             "cv_file",
+            "created_at",
+            "updated_at",
         )
