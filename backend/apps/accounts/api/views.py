@@ -4,6 +4,7 @@ from apps.accounts.api.serializers import (
     RecruiterProfileSerializer,
     UpdateCandidateProfileImageSerializer,
     UpdateCandidateProfileSerializer,
+    UpdateContactCvFileSerializer,
     UpdateRecruiterProfileImageSerializer,
     UpdateRecruiterProfileSerializer,
 )
@@ -135,3 +136,9 @@ class ContactCvDetailAPIView(generics.RetrieveUpdateAPIView):
         except ContactCv.DoesNotExist:
             raise Http404
         return contact_cv
+
+
+class UpdateContactCvFileAPIView(ContactCvDetailAPIView):
+    """Detail Update Contact Cv File. Only candidate can edit contact details."""
+
+    serializer_class = UpdateContactCvFileSerializer

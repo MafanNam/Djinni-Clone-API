@@ -154,3 +154,9 @@ class ContactCvSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         )
+
+
+class UpdateContactCvFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactCv
+        fields = ("cv_file",)

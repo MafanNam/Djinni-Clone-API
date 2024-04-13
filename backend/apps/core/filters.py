@@ -1,5 +1,6 @@
 import django_filters
 from apps.accounts.models import CandidateProfile, RecruiterProfile
+from apps.other.models import Company
 from apps.vacancy.models import Vacancy
 
 
@@ -42,4 +43,12 @@ class VacancyFilter(django_filters.FilterSet):
             "work_exp": ["gt", "lt", "range"],
             "is_only_ukraine": ["exact"],
             "is_test_task": ["exact"],
+        }
+
+
+class MyCompanyFilter(django_filters.FilterSet):
+    class Meta:
+        model = Company
+        fields = {
+            "country": ["exact"],
         }

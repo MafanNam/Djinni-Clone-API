@@ -15,7 +15,7 @@ class ShortCompanySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Company
-        fields = ["id", "name", "image", "country"]
+        fields = ["id", "name", "image", "bio", "company_url", "country"]
 
 
 class CompanyUpdateSerializer(serializers.ModelSerializer):

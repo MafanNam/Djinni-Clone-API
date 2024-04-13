@@ -22,6 +22,23 @@ class ChatRoomListAPIView(generics.ListAPIView):
             return ChatRoom.objects.filter(recruiter=user)
 
 
+class ChatRoomRetrieveAPIView(generics.RetrieveDestroyAPIView):
+    """Chat Room Retrieve APIView."""
+
+    serializer_class = ChatRoomSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        user = self.request.user
+        room_id = self.kwargs["room_id"]
+
+        if user.has_candidate_profile():
+            chat = get_object_or_404(ChatRoom, room_id=room_id, candidate=user)
+        else:
+            chat = get_object_or_404(ChatRoom, room_id=room_id, recruiter=user)
+        return chat
+
+
 class ChatMessagesListCreateAPIView(generics.ListCreateAPIView):
     """Chat Messages List Create APIView. Pagination page size is 20."""
 

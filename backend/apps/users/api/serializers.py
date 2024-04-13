@@ -33,4 +33,4 @@ class CustomUserSerializer(UserSerializer):
 class ShortCustomUserSerializer(CustomUserSerializer):
     class Meta(UserSerializer.Meta):
         model = User
-        fields = ("id", "first_name", "last_name", "type_profile", "is_online")
+        fields = ("id", "first_name", "last_name", "type_profile", "image", "is_online")
