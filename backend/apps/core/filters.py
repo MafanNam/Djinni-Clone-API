@@ -39,8 +39,8 @@ class VacancyFilter(django_filters.FilterSet):
             "skills__name": ["exact"],
             "eng_level": ["exact"],
             "country": ["exact"],
-            "salary": ["gt", "lt", "range"],
-            "work_exp": ["gt", "lt", "range"],
+            "salary": ["gte", "lte", "range"],
+            "work_exp": ["gte", "lte", "exact", "range"],
             "is_only_ukraine": ["exact"],
             "is_test_task": ["exact"],
         }

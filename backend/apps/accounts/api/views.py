@@ -1,6 +1,8 @@
 from apps.accounts.api.serializers import (
+    CandidateProfileListSerializer,
     CandidateProfileSerializer,
     ContactCvSerializer,
+    OfferSerializer,
     RecruiterProfileSerializer,
     UpdateCandidateProfileImageSerializer,
     UpdateCandidateProfileSerializer,
@@ -10,21 +12,26 @@ from apps.accounts.api.serializers import (
 )
 from apps.accounts.models import CandidateProfile, ContactCv, RecruiterProfile
 from apps.core import filters, pagination
+from django.contrib.auth import get_user_model
 from django.http import Http404
 from django_filters import rest_framework as dj_filters
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, serializers
+from rest_framework.generics import get_object_or_404
 from rest_framework.parsers import FormParser, MultiPartParser
 
+from ...vacancy.models import Offer
 from .permissions import CandidateRequiredPermission, RecruiterRequiredPermission
+
+User = get_user_model()
 
 
 class CandidateProfileListAPIView(generics.ListAPIView):
-    """List Candidate Profiles. Pagination page size is 20."""
+    """List Candidate Profiles. Pagination page size is 10."""
 
     queryset = CandidateProfile.objects.select_related("category").prefetch_related("skills").all()
-    serializer_class = CandidateProfileSerializer
+    serializer_class = CandidateProfileListSerializer
     permission_classes = [permissions.AllowAny]
-    pagination_class = pagination.StandardResultsSetPagination
+    pagination_class = pagination.MinimumResultsSetPagination
     filter_backends = [dj_filters.DjangoFilterBackend]
     filterset_class = filters.CandidateProfileFilter
 
@@ -32,12 +39,26 @@ class CandidateProfileListAPIView(generics.ListAPIView):
 class CandidateProfileDetailAPIView(generics.RetrieveAPIView):
     """Detail Candidate Profile"""
 
-    serializer_class = CandidateProfileSerializer
+    serializer_class = CandidateProfileListSerializer
     permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
         queryset = CandidateProfile.objects.select_related("user", "category")
         return queryset
+
+
+class CandidateOfferAPIView(generics.CreateAPIView):
+    """Create Candidate Offer. Only recruiter can create offer."""
+
+    permission_classes = [RecruiterRequiredPermission]
+    serializer_class = OfferSerializer
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        candidate = get_object_or_404(User, id=self.kwargs["pk"])
+        if Offer.objects.filter(user=user, candidate=candidate).exists():
+            raise serializers.ValidationError({"message": "Offer already exists"})
+        serializer.save(user=user, candidate=candidate)
 
 
 class CandidateProfileUserAPIView(generics.RetrieveUpdateAPIView):
@@ -68,12 +89,12 @@ class CandidateProfileImageUserAPIView(generics.UpdateAPIView):
 
 
 class RecruiterProfileListAPIView(generics.ListAPIView):
-    """List Recruiter Profiles. Pagination page size is 20."""
+    """List Recruiter Profiles. Pagination page size is 10."""
 
     queryset = RecruiterProfile.objects.select_related("company").all()
     serializer_class = RecruiterProfileSerializer
     permission_classes = [permissions.AllowAny]
-    pagination_class = pagination.StandardResultsSetPagination
+    pagination_class = pagination.MinimumResultsSetPagination
     filter_backends = [dj_filters.DjangoFilterBackend]
     filterset_class = filters.RecruiterProfileFilter
 

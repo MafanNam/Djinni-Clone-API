@@ -1,4 +1,5 @@
 from apps.accounts.models import CandidateProfile, ContactCv, RecruiterProfile
+from apps.vacancy.models import Offer
 from django.contrib import admin
 
 
@@ -30,3 +31,10 @@ class ContactCvAdmin(admin.ModelAdmin):
     list_display_links = ("id", "user")
     search_fields = ("first_name", "last_name")
     list_filter = ("user", "created_at", "updated_at")
+
+
+@admin.register(Offer)
+class OfferAdmin(admin.ModelAdmin):
+    list_display = ("id", "user", "candidate", "vacancy", "message", "created_at")
+    list_display_links = ("id", "user", "candidate")
+    search_fields = ("user", "candidate", "vacancy", "message")

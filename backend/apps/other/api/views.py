@@ -10,20 +10,20 @@ from .serializers import CategorySerializer, CompanySerializer, CompanyUpdateSer
 
 
 class CategoryListAPIView(generics.ListAPIView):
-    """List all categories. Pagination page size is 50."""
+    """List all categories. Pagination page size is 100."""
 
     queryset = Category.objects.all().order_by("id")
     serializer_class = CategorySerializer
     permission_classes = [permissions.AllowAny]
-    pagination_class = pagination.LargeResultsSetPagination
+    pagination_class = pagination.MaxResultsSetPagination
 
 
 class CompanyListAPIView(generics.ListAPIView):
-    """List all companies, Pagination page size is 20. Public permission"""
+    """List all companies, Pagination page size is 10. Public permission"""
 
     queryset = Company.objects.all().order_by("id")
     serializer_class = CompanySerializer
-    pagination_class = pagination.StandardResultsSetPagination
+    pagination_class = pagination.MinimumResultsSetPagination
     permission_classes = [permissions.AllowAny]
 
 
@@ -71,7 +71,9 @@ class CompanyMyDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class SkillsListAPIView(generics.ListAPIView):
+    """List all tags for skills. Pagination page size is 100. Public permission"""
+
     queryset = Tag.objects.order_by("name").all()
     serializer_class = SkillsSerializer
     permission_classes = [permissions.AllowAny]
-    pagination_class = pagination.LargeResultsSetPagination
+    pagination_class = pagination.MaxResultsSetPagination

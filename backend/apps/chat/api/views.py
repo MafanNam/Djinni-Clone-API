@@ -8,11 +8,11 @@ from .serializers import ChatMessageSerializer, ChatRoomSerializer
 
 
 class ChatRoomListAPIView(generics.ListAPIView):
-    """Chat Room List APIView. Pagination page size is 10."""
+    """Chat Room List APIView. Pagination page size is 100."""
 
     serializer_class = ChatRoomSerializer
     permission_classes = [permissions.IsAuthenticated]
-    pagination_class = pagination.MinimumResultsSetPagination
+    pagination_class = pagination.MaxResultsSetPagination
 
     def get_queryset(self):
         user = self.request.user
@@ -40,11 +40,11 @@ class ChatRoomRetrieveAPIView(generics.RetrieveDestroyAPIView):
 
 
 class ChatMessagesListCreateAPIView(generics.ListCreateAPIView):
-    """Chat Messages List Create APIView. Pagination page size is 20."""
+    """Chat Messages List Create APIView. Pagination page size is 100."""
 
     serializer_class = ChatMessageSerializer
     permission_classes = [permissions.IsAuthenticated]
-    pagination_class = pagination.StandardResultsSetPagination
+    pagination_class = pagination.MaxResultsSetPagination
 
     def get_queryset(self):
         user = self.request.user

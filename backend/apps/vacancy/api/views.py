@@ -25,10 +25,10 @@ class VacancyListAPIView(generics.ListAPIView):
     )
     serializer_class = VacancySerializer
     permission_classes = [permissions.AllowAny]
-    pagination_class = pagination.MediumResultsSetPagination
+    pagination_class = pagination.MinimumResultsSetPagination
     filter_backends = [dj_filters.DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = filters.VacancyFilter
-    search_fields = ["company_name", "title", "category_name"]
+    search_fields = ["company__name", "title", "category__name"]
     ordering_fields = ["created_at", "salary"]
 
 
@@ -40,7 +40,7 @@ class VacancyMyListCreateAPIView(generics.ListCreateAPIView):
     pagination_class = pagination.MinimumResultsSetPagination
     filter_backends = [dj_filters.DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = filters.VacancyFilter
-    search_fields = ["company_name", "title", "category_name"]
+    search_fields = ["company__name", "title", "category__name"]
     ordering_fields = ["created_at", "salary"]
 
     def get_queryset(self):
@@ -88,16 +88,16 @@ class VacancyDetailAPIView(generics.RetrieveAPIView):
     permission_classes = [permissions.AllowAny]
 
     def retrieve(self, request, *args, **kwargs):
-        user = request.user
 
         instance = self.get_object()
         serializer = self.get_serializer(instance)
 
-        if user.is_authenticated and user.has_candidate_profile():
-            viewer_ip = request.META.get("REMOTE_ADDR", None)
-            # TODO: change when using only Docker and Celery Maybe
-            VacancyView.record_view(vacancy=instance, user=user, viewer_ip=viewer_ip)
-            # create_vacancy_view.delay(instance.id, user.id, viewer_ip)
+        # TODO: some kind of caching
+        # if user.is_authenticated and user.has_candidate_profile():
+        viewer_ip = request.META.get("REMOTE_ADDR", None)
+        # TODO: change when using only Docker and Celery Maybe
+        VacancyView.record_view(vacancy=instance, user=None, viewer_ip=viewer_ip)
+        # create_vacancy_view.delay(instance.id, user.id, viewer_ip)
 
         return Response(serializer.data)
 

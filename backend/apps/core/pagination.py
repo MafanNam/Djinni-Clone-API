@@ -1,6 +1,14 @@
 from rest_framework.pagination import PageNumberPagination
 
 
+class MaxResultsSetPagination(PageNumberPagination):
+    """Page Size 100"""
+
+    page_size = 100
+    page_size_query_param = "page_size"
+    max_page_size = 10000
+
+
 class LargeResultsSetPagination(PageNumberPagination):
     """Page Size 50"""
 
