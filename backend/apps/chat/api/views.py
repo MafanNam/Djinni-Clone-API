@@ -8,11 +8,11 @@ from .serializers import ChatMessageSerializer, ChatRoomSerializer
 
 
 class ChatRoomListAPIView(generics.ListAPIView):
-    """Chat Room List APIView. Pagination page size is 10."""
+    """Chat Room List APIView. Pagination page size is 100."""
 
     serializer_class = ChatRoomSerializer
     permission_classes = [permissions.IsAuthenticated]
-    pagination_class = pagination.MinimumResultsSetPagination
+    pagination_class = pagination.MaxResultsSetPagination
 
     def get_queryset(self):
         user = self.request.user
@@ -22,12 +22,29 @@ class ChatRoomListAPIView(generics.ListAPIView):
             return ChatRoom.objects.filter(recruiter=user)
 
 
+class ChatRoomRetrieveAPIView(generics.RetrieveDestroyAPIView):
+    """Chat Room Retrieve APIView."""
+
+    serializer_class = ChatRoomSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        user = self.request.user
+        room_id = self.kwargs["room_id"]
+
+        if user.has_candidate_profile():
+            chat = get_object_or_404(ChatRoom, room_id=room_id, candidate=user)
+        else:
+            chat = get_object_or_404(ChatRoom, room_id=room_id, recruiter=user)
+        return chat
+
+
 class ChatMessagesListCreateAPIView(generics.ListCreateAPIView):
-    """Chat Messages List Create APIView. Pagination page size is 20."""
+    """Chat Messages List Create APIView. Pagination page size is 100."""
 
     serializer_class = ChatMessageSerializer
     permission_classes = [permissions.IsAuthenticated]
-    pagination_class = pagination.StandardResultsSetPagination
+    pagination_class = pagination.MaxResultsSetPagination
 
     def get_queryset(self):
         user = self.request.user

@@ -12,7 +12,9 @@ class ChatRoom(TimeStampedModel):
     room_id = ShortUUIDField()
     candidate = models.ForeignKey(User, on_delete=models.CASCADE, related_name="candidate_chatroom")
     recruiter = models.ForeignKey(User, on_delete=models.CASCADE, related_name="recruiter_chatroom")
-    feedback = models.OneToOneField(Feedback, on_delete=models.CASCADE, related_name="feedback_chatroom")
+    feedback = models.OneToOneField(
+        Feedback, on_delete=models.CASCADE, blank=True, null=True, related_name="feedback_chatroom"
+    )
 
     class Meta:
         verbose_name = _("Chat Room")

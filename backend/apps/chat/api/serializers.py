@@ -15,6 +15,7 @@ class ChatRoomSerializer(serializers.ModelSerializer):
     recruiter = ShortRecruiterProfileSerializer(source="recruiter.recruiter_profile", read_only=True, many=False)
     feedback = ShortFeedbackSerializer(read_only=True, many=False)
     last_message = serializers.SerializerMethodField(read_only=True)
+    is_read = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = ChatRoom
@@ -25,6 +26,7 @@ class ChatRoomSerializer(serializers.ModelSerializer):
             "recruiter",
             "feedback",
             "last_message",
+            "is_read",
             "created_at",
             "updated_at",
         )
@@ -32,6 +34,10 @@ class ChatRoomSerializer(serializers.ModelSerializer):
     @extend_schema_field(OpenApiTypes.STR)
     def get_last_message(self, obj):
         return obj.chat_messages.all().last().message
+
+    @extend_schema_field(OpenApiTypes.BOOL)
+    def get_is_read(self, obj):
+        return obj.chat_messages.all().last().is_read
 
 
 class ChatMessageSerializer(serializers.ModelSerializer):

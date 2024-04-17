@@ -76,4 +76,19 @@ class Feedback(TimeStampedModel):
         unique_together = ("user", "vacancy")
 
     def __str__(self):
-        return f"Feedback {self.user.first_name} {self.vacancy.title}"
+        return f"Feedback {self.user.first_name} - {self.vacancy.title}"
+
+
+class Offer(TimeStampedModel):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="offer_user")
+    candidate = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="candidate_offer")
+    vacancy = models.ForeignKey(Vacancy, on_delete=models.CASCADE, related_name="offer_vacancy")
+    message = models.TextField(_("message"), max_length=1000, null=True, blank=True)
+
+    class Meta:
+        verbose_name = _("Offer")
+        verbose_name_plural = _("Offers")
+        unique_together = ("user", "candidate", "vacancy")
+
+    def __str__(self):
+        return f"Offer for {self.candidate.first_name} - {self.vacancy.title}"

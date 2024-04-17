@@ -1,5 +1,7 @@
 from apps.accounts.api.permissions import RecruiterRequiredPermission
+from django_filters import rest_framework as dj_filters
 from rest_framework import generics, permissions, serializers
+from rest_framework.filters import OrderingFilter, SearchFilter
 from taggit.models import Tag
 
 from ...core import pagination
@@ -8,28 +10,37 @@ from .serializers import CategorySerializer, CompanySerializer, CompanyUpdateSer
 
 
 class CategoryListAPIView(generics.ListAPIView):
-    """List all categories. Pagination page size is 50."""
+    """List all categories. Pagination page size is 100."""
 
     queryset = Category.objects.all().order_by("id")
     serializer_class = CategorySerializer
     permission_classes = [permissions.AllowAny]
-    pagination_class = pagination.LargeResultsSetPagination
+    pagination_class = pagination.MaxResultsSetPagination
 
 
 class CompanyListAPIView(generics.ListAPIView):
-    """List all companies, Pagination page size is 20. Public permission"""
+    """List all companies, Pagination page size is 10. Public permission"""
 
     queryset = Company.objects.all().order_by("id")
     serializer_class = CompanySerializer
-    pagination_class = pagination.StandardResultsSetPagination
+    pagination_class = pagination.MinimumResultsSetPagination
     permission_classes = [permissions.AllowAny]
 
 
 class CompanyMyListCreateAPIView(generics.ListCreateAPIView):
     """List user companies and create new, Only 10 companies. Only recruiters can create and list companies."""
 
-    serializer_class = CompanySerializer
+    # serializer_class = CompanySerializer
     permission_classes = [RecruiterRequiredPermission]
+    filter_backends = [dj_filters.DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ["country"]
+    search_fields = ["name", "country"]
+    ordering_fields = ["created_at", "num_employees"]
+
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return CompanySerializer
+        return CompanyUpdateSerializer
 
     def get_queryset(self):
         return Company.objects.filter(user=self.request.user).order_by("id")
@@ -60,7 +71,9 @@ class CompanyMyDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class SkillsListAPIView(generics.ListAPIView):
+    """List all tags for skills. Pagination page size is 100. Public permission"""
+
     queryset = Tag.objects.order_by("name").all()
     serializer_class = SkillsSerializer
     permission_classes = [permissions.AllowAny]
-    pagination_class = pagination.LargeResultsSetPagination
+    pagination_class = pagination.MaxResultsSetPagination
