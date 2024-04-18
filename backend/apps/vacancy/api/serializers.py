@@ -9,6 +9,7 @@ from apps.other.api.serializers import ShortCompanySerializer
 from apps.other.models import Category, Company
 from apps.vacancy.models import Feedback, Vacancy
 from django_countries.serializer_fields import CountryField
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 from taggit.serializers import TaggitSerializer, TagListSerializerField
@@ -22,6 +23,7 @@ class UpdateVacancySerializer(TaggitSerializer, serializers.HyperlinkedModelSeri
     recruiter = serializers.SerializerMethodField()
     views = serializers.IntegerField(source="vacancy_views.count", read_only=True)
     feedback = serializers.IntegerField(source="feedback_vacancy.count", read_only=True)
+    is_user_feedback = serializers.SerializerMethodField()
 
     class Meta:
         model = Vacancy
@@ -45,6 +47,7 @@ class UpdateVacancySerializer(TaggitSerializer, serializers.HyperlinkedModelSeri
             "is_test_task",
             "views",
             "feedback",
+            "is_user_feedback",
             "created_at",
             "updated_at",
         )
@@ -55,6 +58,12 @@ class UpdateVacancySerializer(TaggitSerializer, serializers.HyperlinkedModelSeri
         return ShortRecruiterProfileSerializer(
             obj.user.recruiter_profile, context={"request": self.context["request"]}, many=False
         ).data
+
+    @extend_schema_field(OpenApiTypes.BOOL)
+    def get_is_user_feedback(self, obj):
+        if not self.context["request"].user.is_authenticated:
+            return False
+        return Feedback.objects.filter(user=self.context["request"].user, vacancy=obj).exists()
 
 
 class RetrieveVacancySerializer(UpdateVacancySerializer):
