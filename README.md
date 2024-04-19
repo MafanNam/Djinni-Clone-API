@@ -3,11 +3,16 @@
 This is the repository for the Djinni-Clone-API project, which is a clone of the Djinni web service. This API implements
 a basic set of functionalities allowing users to interact with the platform.
 
+![Djinni title](https://raw.githubusercontent.com/MafanNam/Djinni-Clone-API/dev-0.4/screanshots/title.svg)
+
 ## Description
 
 Djinni-Clone-API is developed using Django, one of the most popular frameworks for building web applications in Python.
 This API provides features such as user registration, advertisement creation, user profile management, and other core
 functionalities.
+
+![Djinni frontend](https://raw.githubusercontent.com/MafanNam/Djinni-Clone-API/dev-0.4/screanshots/frontend.gif)
+
 
 ## Requirements
 
@@ -58,6 +63,9 @@ Not completed
 ## API Documentation
 
 The API documentation is not available [here](link-to-your-api-docs).
+
+![Djinni endpoints](https://raw.githubusercontent.com/MafanNam/Djinni-Clone-API/dev-0.4/screanshots/endpoints.gif)
+
 
 ## Author
 
