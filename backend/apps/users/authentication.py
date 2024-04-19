@@ -1,16 +1,6 @@
 from django.conf import settings
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-# def enforce_csrf(request):
-#     """
-#     Enforce CSRF validation.
-#     """
-#     check = CSRFCheck(get_response=request)
-#     check.process_request(request)
-#     reason = check.process_view(request, None, (), {})
-#     if reason:
-#         raise exceptions.PermissionDenied("CSRF Failed: %s" % reason)
-
 
 class CustomJWTAuthentication(JWTAuthentication):
     def authenticate(self, request):
@@ -25,6 +15,5 @@ class CustomJWTAuthentication(JWTAuthentication):
             return None
 
         validated_token = self.get_validated_token(raw_token)
-        # enforce_csrf(request)
 
         return self.get_user(validated_token), validated_token
