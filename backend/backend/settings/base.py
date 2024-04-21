@@ -195,15 +195,18 @@ CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 # DOC
 SPECTACULAR_SETTINGS = {
     "TITLE": "Djinni Clone API",
-    "DESCRIPTION": "",
-    "VERSION": "0.0.0",
+    "DESCRIPTION": "This is the Djinni-Clone-API project, which is a clone of the Djinni web service. This API implements a basic set of functionalities allowing users to interact with the platform.",
+    "VERSION": "0.4",
     "SERVE_INCLUDE_SCHEMA": False,
     "COMPONENT_SPLIT_REQUEST": True,
     "SCHEMA_PATH_PREFIX": r"/api/v1/",
 }
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ("apps.users.authentication.CustomJWTAuthentication",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "apps.users.authentication.CustomJWTAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
@@ -230,7 +233,6 @@ SIMPLE_JWT = {
     "AUTH_COOKIE_PATH": "/",
     "AUTH_COOKIE_SAMESITE": "Lax",
 }
-
 
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True

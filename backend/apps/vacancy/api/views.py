@@ -2,7 +2,7 @@ from apps.accounts.api.permissions import CandidateRequiredPermission, Recruiter
 from apps.core import filters, pagination
 from apps.vacancy.api.serializers import (
     FeedbackSerializer,
-    RetrieveVacancySerializer,
+    RetrieveMyVacancySerializer,
     UpdateVacancySerializer,
     VacancySerializer,
 )
@@ -75,7 +75,7 @@ class VacancyMyDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_serializer_class(self):
         if self.request.method == "GET":
-            return RetrieveVacancySerializer
+            return RetrieveMyVacancySerializer
         return UpdateVacancySerializer
 
 
@@ -88,7 +88,6 @@ class VacancyDetailAPIView(generics.RetrieveAPIView):
     permission_classes = [permissions.AllowAny]
 
     def retrieve(self, request, *args, **kwargs):
-
         instance = self.get_object()
         serializer = self.get_serializer(instance)
 
