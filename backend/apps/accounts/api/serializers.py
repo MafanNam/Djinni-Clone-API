@@ -10,7 +10,7 @@ from taggit.serializers import TaggitSerializer, TagListSerializerField
 
 
 class CandidateProfileSerializer(TaggitSerializer, serializers.HyperlinkedModelSerializer):
-    employ_options = CustomMultipleChoiceField(choices=EMPLOY_OPTIONS)
+    # employ_options = CustomMultipleChoiceField(choices=EMPLOY_OPTIONS)
     skills = TagListSerializerField()
     category = serializers.CharField(source="category.name", read_only=True)
 

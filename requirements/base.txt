@@ -28,3 +28,4 @@ redis==5.0.3
 celery==5.3.6
 flower==2.0.1
 phonenumbers==8.13.32
+gunicorn==22.0.0

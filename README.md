@@ -5,6 +5,10 @@ a basic set of functionalities allowing users to interact with the platform.
 
 ![Djinni title](https://raw.githubusercontent.com/MafanNam/Djinni-Clone-API/dev-0.4/screanshots/title.svg)
 
+### Diagram DB
+
+![Djinni diagram DB](https://raw.githubusercontent.com/MafanNam/Djinni-Clone-API/dev-0.4/screanshots/djinni_clone_diagram_db.svg)
+
 ## Description
 
 Djinni-Clone-API is developed using Django, one of the most popular frameworks for building web applications in Python.
@@ -12,7 +16,6 @@ This API provides features such as user registration, advertisement creation, us
 functionalities.
 
 ![Djinni frontend](https://raw.githubusercontent.com/MafanNam/Djinni-Clone-API/dev-0.4/screanshots/frontend.gif)
-
 
 ## Requirements
 
@@ -58,14 +61,14 @@ $ python manage.py runserver
 You can now access the API in your browser at http://127.0.0.1:8000/.
 
 ## Docker in development
+
 Not completed
 
 ## API Documentation
 
-The API documentation is not available [here](link-to-your-api-docs).
+The API documentation is not available [localhost:8080](http://localhost:8080).
 
 ![Djinni endpoints](https://raw.githubusercontent.com/MafanNam/Djinni-Clone-API/dev-0.4/screanshots/endpoints.gif)
-
 
 ## Author
 

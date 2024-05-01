@@ -15,8 +15,7 @@ from rest_framework import serializers
 from taggit.serializers import TaggitSerializer, TagListSerializerField
 
 
-class UpdateVacancySerializer(TaggitSerializer, serializers.HyperlinkedModelSerializer):
-    employ_options = CustomMultipleChoiceField(choices=EMPLOY_OPTIONS)
+class MyVacancySerializer(TaggitSerializer, serializers.HyperlinkedModelSerializer):
     skills = TagListSerializerField()
     category = serializers.SlugRelatedField(slug_field="name", queryset=Category.objects.all())
     company = serializers.SlugRelatedField(slug_field="name", queryset=Company.objects.all())
@@ -66,7 +65,11 @@ class UpdateVacancySerializer(TaggitSerializer, serializers.HyperlinkedModelSeri
         return Feedback.objects.filter(user=self.context["request"].user, vacancy=obj).exists()
 
 
-class RetrieveVacancySerializer(UpdateVacancySerializer):
+class UpdateVacancySerializer(MyVacancySerializer):
+    employ_options = CustomMultipleChoiceField(choices=EMPLOY_OPTIONS)
+
+
+class RetrieveMyVacancySerializer(MyVacancySerializer):
     category = serializers.CharField(source="category.name", read_only=True)
     company = ShortCompanySerializer(read_only=True, many=False)
 
@@ -77,11 +80,6 @@ class VacancySerializer(UpdateVacancySerializer):
     eng_level = serializers.CharField(source="get_eng_level_display", read_only=True)
     category = serializers.CharField(source="category.name", read_only=True)
     company = ShortCompanySerializer(read_only=True, many=False)
-
-
-# class UpdateMyVacancySerializer(UpdateVacancySerializer):
-#     country = CountryField(name_only=False)
-#     category = serializers.SlugRelatedField(slug_field="name", queryset=Category.objects.all())
 
 
 class ShortVacancySerializer(UpdateVacancySerializer):

@@ -5,21 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-
-## [0.3] - 2024-03-28
+## [0.4] - start - 2024-04-21
 
 ### Added
 
--
+- gunicorn
 
 ### Changed
 
--
+- docker compose nginx now restart unless stopped
 
 ### Fixed
 
--
-
+- my vacancy serializer(retrieve/update)
 
 ## [0.2] - 2024-03-26
 
