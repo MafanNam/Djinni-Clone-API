@@ -43,7 +43,7 @@ $ cd Djinni-Clone-API
 3. Install dependencies:
 
 ```bash
-$ pip install -r requirements.txt
+$ pip install -r requirements/local.txt
 ```
 
 4. Apply migrations to create the database:
