@@ -40,29 +40,111 @@ $ git clone https://github.com/MafanNam/Djinni-Clone-API.git
 $ cd Djinni-Clone-API
 ```
 
-3. Install dependencies:
+3. Create/Activate environment:
+
+```bash
+$ pip install virtualenv
+$ python -m virtualenv venv
+$ .\venv\Scripts\activate
+$ # or linux
+$ source venv/bin/activate
+```
+
+4. Install dependencies:
 
 ```bash
 $ pip install -r requirements.txt
 ```
 
-4. Apply migrations to create the database:
+5. Navigate to api directory:
+
+```bash
+$ cd backend
+```
+
+6. Apply migrations to create the database:
 
 ```bash
 $ python manage.py migrate
 ```
 
-5. Run the server:
+7. Load example data
+
+```bash
+$ python -Xutf8 ./manage.py loaddata mydata.json
+```
+
+8. Run the server:
 
 ```bash
 $ python manage.py runserver
 ```
 
-You can now access the API in your browser at http://127.0.0.1:8000/.
+#### About fixtures(mydata.json)
 
-## Docker in development
+All user email in [mydata.json](backend/mydata.json) and `password=Pass12345`
 
-Not completed
+for admin user `email=admin@gmail.com` and `password=1`
+
+### If you want the api to send messages to mail
+
+Then you MUST create and config `django.env` optional `django.docker.env`.
+
+For example I create `django.example.env` and `django.docker.example.env`
+
+All these files are in [.envs/.local/](.envs/.local/)
+
+You can now access the API in your browser at http://localhost:8000/.
+
+## Getting Started with Docker
+
+Commands can be run through a makefile or written manually.
+
+You can access the API in your browser at http://localhost:8080/. Flower http://localhost:5555/
+
+### To build and raise a container, you just need to run it:
+
+You cannot use makefile
+
+```bash
+$ docker compose -f local.yml up --build -d --remove-orphans
+$ # or
+$ docker compose -f local.yml up --build
+```
+
+You can use makefile
+
+```bash
+$ make build
+$ # or
+$ make build-log
+```
+
+### Basic commands:
+
+```bash
+$ make buld-log
+
+$ make up
+
+$ make down
+```
+
+## Run test
+
+For testing
+
+#### makefile
+
+```bash
+$ make tests
+```
+
+#### no makefile
+
+```bash
+$ docker compose -f local.yml run --rm server python manage.py test
+```
 
 ## API Documentation
 

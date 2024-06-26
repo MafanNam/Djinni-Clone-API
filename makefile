@@ -50,11 +50,11 @@ volume:
 djinni-db:
 	docker compose -f local.yml exec postgres psql --username=mafan --dbname=djinni-live
 
-cov:
-	docker compose -f local.yml run --rm server pytest -p no:warnings --cov=. -v
-
-cov-gen:
-	docker compose -f local.yml run --rm server pytest -p no:warnings --cov=. --cov-report html
+#cov:
+#	docker compose -f local.yml run --rm server pytest -p no:warnings --cov=. -v
+#
+#cov-gen:
+#	docker compose -f local.yml run --rm server pytest -p no:warnings --cov=. --cov-report html
 
 tests:
-	docker compose -f local.yml run --rm server pytest
+	docker compose -f local.yml run --rm server python manage.py test
